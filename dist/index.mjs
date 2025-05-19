@@ -26,7 +26,7 @@ var MessageHistorySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-var MessageHistory_default = mongoose.model("MessageHistory", MessageHistorySchema);
+var MessageHistory_default = MessageHistorySchema;
 
 // src/types/Message.ts
 import mongoose2, { Schema as Schema2 } from "mongoose";
@@ -169,7 +169,7 @@ MessageSchema.pre(/^find/, function(next) {
   this.populate("replies");
   next();
 });
-var Message_default = mongoose2.model("Message", MessageSchema);
+var Message_default = MessageSchema;
 
 // src/types/User.ts
 import mongoose3 from "mongoose";
@@ -201,7 +201,7 @@ userSchema.set("toJSON", {
     return ret;
   }
 });
-var User = mongoose3.model("User", userSchema);
+var User_default = userSchema;
 
 // src/types/Conversation.ts
 import mongoose4 from "mongoose";
@@ -272,7 +272,7 @@ ConversationSchema.set("toJSON", {
     delete ret.__v;
   }
 });
-var Conversation_default = mongoose4.model("Conversation", ConversationSchema);
+var Conversation_default = ConversationSchema;
 
 // src/types/Organization.ts
 import mongoose5 from "mongoose";
@@ -286,7 +286,52 @@ organizationSchema.set("toJSON", {
     delete ret.__v;
   }
 });
-var Organization = mongoose5.model("Organization", organizationSchema);
+var Organization_default = organizationSchema;
+
+// src/types/DirectMessage.ts
+import mongoose6 from "mongoose";
+var { Schema: Schema4 } = mongoose6;
+var DirectMessageSchema = new Schema4(
+  {
+    conversationId: {
+      type: Schema4.Types.ObjectId,
+      ref: "Conversation",
+      required: true
+    },
+    senderId: {
+      type: Schema4.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    likes: {
+      type: Number,
+      default: 0
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+DirectMessageSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function(doc, ret) {
+    ret.id = ret._id.toString();
+    delete ret._id;
+    delete ret.__v;
+  }
+});
+var DirectMessage_default = DirectMessageSchema;
 export {
-  Conversation_default as Conversation
+  DirectMessage_default as DirectMessageSchema,
+  MessageHistory_default as MessageHistorySchema,
+  Conversation_default as conversationSchema,
+  Message_default as messageSchema,
+  Organization_default as organizationSchema,
+  User_default as userSchema
 };

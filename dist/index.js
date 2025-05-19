@@ -30,7 +30,12 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
-  Conversation: () => Conversation_default
+  DirectMessageSchema: () => DirectMessage_default,
+  MessageHistorySchema: () => MessageHistory_default,
+  conversationSchema: () => Conversation_default,
+  messageSchema: () => Message_default,
+  organizationSchema: () => Organization_default,
+  userSchema: () => User_default
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -62,7 +67,7 @@ var MessageHistorySchema = new import_mongoose.default.Schema(
   },
   { timestamps: true }
 );
-var MessageHistory_default = import_mongoose.default.model("MessageHistory", MessageHistorySchema);
+var MessageHistory_default = MessageHistorySchema;
 
 // src/types/Message.ts
 var import_mongoose2 = __toESM(require("mongoose"));
@@ -205,7 +210,7 @@ MessageSchema.pre(/^find/, function(next) {
   this.populate("replies");
   next();
 });
-var Message_default = import_mongoose2.default.model("Message", MessageSchema);
+var Message_default = MessageSchema;
 
 // src/types/User.ts
 var import_mongoose3 = __toESM(require("mongoose"));
@@ -237,7 +242,7 @@ userSchema.set("toJSON", {
     return ret;
   }
 });
-var User = import_mongoose3.default.model("User", userSchema);
+var User_default = userSchema;
 
 // src/types/Conversation.ts
 var import_mongoose4 = __toESM(require("mongoose"));
@@ -308,7 +313,7 @@ ConversationSchema.set("toJSON", {
     delete ret.__v;
   }
 });
-var Conversation_default = import_mongoose4.default.model("Conversation", ConversationSchema);
+var Conversation_default = ConversationSchema;
 
 // src/types/Organization.ts
 var import_mongoose5 = __toESM(require("mongoose"));
@@ -322,8 +327,53 @@ organizationSchema.set("toJSON", {
     delete ret.__v;
   }
 });
-var Organization = import_mongoose5.default.model("Organization", organizationSchema);
+var Organization_default = organizationSchema;
+
+// src/types/DirectMessage.ts
+var import_mongoose6 = __toESM(require("mongoose"));
+var { Schema: Schema4 } = import_mongoose6.default;
+var DirectMessageSchema = new Schema4(
+  {
+    conversationId: {
+      type: Schema4.Types.ObjectId,
+      ref: "Conversation",
+      required: true
+    },
+    senderId: {
+      type: Schema4.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    likes: {
+      type: Number,
+      default: 0
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+DirectMessageSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function(doc, ret) {
+    ret.id = ret._id.toString();
+    delete ret._id;
+    delete ret.__v;
+  }
+});
+var DirectMessage_default = DirectMessageSchema;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  Conversation
+  DirectMessageSchema,
+  MessageHistorySchema,
+  conversationSchema,
+  messageSchema,
+  organizationSchema,
+  userSchema
 });

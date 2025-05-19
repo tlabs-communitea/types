@@ -23,6 +23,4 @@ organizationSchema.set('toJSON', {
     }
 });
 
-const Organization: Model<IOrganizationDocument> = mongoose.model<IOrganizationDocument>('Organization', organizationSchema);
-
-export default Organization;
+export default organizationSchema;

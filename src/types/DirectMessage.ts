@@ -41,4 +41,4 @@ DirectMessageSchema.set('toJSON', {
 });
 
 
-export default mongoose.model('DirectMessage', DirectMessageSchema);
+export default DirectMessageSchema;

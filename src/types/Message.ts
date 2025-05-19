@@ -169,4 +169,4 @@ MessageSchema.pre(/^find/, function (next) {
     next();
 });
 
-export default mongoose.model<IMessage>('Message', MessageSchema);
+export default MessageSchema;

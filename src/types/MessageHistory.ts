@@ -29,4 +29,4 @@ const MessageHistorySchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-export default mongoose.model('MessageHistory', MessageHistorySchema);
+export default MessageHistorySchema;

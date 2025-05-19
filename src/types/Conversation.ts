@@ -83,4 +83,4 @@ ConversationSchema.set('toJSON', {
     },
 });
 
-export default mongoose.model<IConversation>('Conversation', ConversationSchema);
+export default ConversationSchema;

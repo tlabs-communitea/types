@@ -287,3 +287,6 @@ organizationSchema.set("toJSON", {
   }
 });
 var Organization = mongoose5.model("Organization", organizationSchema);
+export {
+  Conversation_default as Conversation
+};

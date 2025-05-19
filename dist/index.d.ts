@@ -42,6 +42,11 @@ interface IConversation extends Document {
     updatedAt: Date;
     archived: boolean;
 }
+declare const _default: mongoose.Model<IConversation, {}, {}, {}, mongoose.Document<unknown, {}, IConversation, {}> & IConversation & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}, any>;
 
 interface IOrganization {
     name: string;
@@ -51,4 +56,4 @@ interface IOrganization {
 interface IOrganizationDocument extends IOrganization, Document {
 }
 
-export type { IConversation, IMessage, IOrganization, IOrganizationDocument, IUser, IUserDocument };
+export { _default as Conversation, type IConversation, type IMessage, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument };

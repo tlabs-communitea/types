@@ -35,6 +35,19 @@ declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any
     __v: number;
 }>;
 
+interface MessageMetadata {
+    userFlaggedBy: Types.ObjectId[];
+    adminFlaggedBy: Types.ObjectId[];
+}
+declare const MessageMetadataSchema: mongoose.Schema<MessageMetadata, mongoose.Model<MessageMetadata, any, any, any, mongoose.Document<unknown, any, MessageMetadata, any> & MessageMetadata & {
+    _id: Types.ObjectId;
+} & {
+    __v: number;
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, MessageMetadata, mongoose.Document<unknown, {}, mongoose.FlatRecord<MessageMetadata>, {}> & mongoose.FlatRecord<MessageMetadata> & {
+    _id: Types.ObjectId;
+} & {
+    __v: number;
+}>;
 interface IMessage extends Document {
     channelId?: Types.ObjectId;
     conversationId?: Types.ObjectId;
@@ -47,6 +60,7 @@ interface IMessage extends Document {
     likedBy: Types.ObjectId[];
     parentMessageId?: Types.ObjectId;
     replies?: IMessage[];
+    metadata?: MessageMetadata;
 }
 declare const MessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
@@ -61,6 +75,7 @@ declare const MessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, 
     channelId: any;
     parentMessageId: any;
     likedBy: any;
+    metadata: MessageMetadata;
     content?: string | null | undefined;
     fileUrl?: string | null | undefined;
     fileName?: string | null | undefined;
@@ -75,6 +90,7 @@ declare const MessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, 
     channelId: any;
     parentMessageId: any;
     likedBy: any;
+    metadata: MessageMetadata;
     content?: string | null | undefined;
     fileUrl?: string | null | undefined;
     fileName?: string | null | undefined;
@@ -89,6 +105,7 @@ declare const MessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, 
     channelId: any;
     parentMessageId: any;
     likedBy: any;
+    metadata: MessageMetadata;
     content?: string | null | undefined;
     fileUrl?: string | null | undefined;
     fileName?: string | null | undefined;
@@ -231,4 +248,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { DirectMessageSchema, type IConversation, type IMessage, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, MessageHistorySchema, ConversationSchema as conversationSchema, MessageSchema as messageSchema, organizationSchema, userSchema };
+export { DirectMessageSchema, type IConversation, type IMessage, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, MessageHistorySchema, type MessageMetadata, MessageMetadataSchema, ConversationSchema as conversationSchema, MessageSchema as messageSchema, organizationSchema, userSchema };

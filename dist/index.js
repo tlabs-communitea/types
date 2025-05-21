@@ -32,6 +32,7 @@ var index_exports = {};
 __export(index_exports, {
   DirectMessageSchema: () => DirectMessage_default,
   MessageHistorySchema: () => MessageHistory_default,
+  MessageMetadataSchema: () => MessageMetadataSchema,
   conversationSchema: () => Conversation_default,
   messageSchema: () => Message_default,
   organizationSchema: () => Organization_default,
@@ -71,6 +72,24 @@ var MessageHistory_default = MessageHistorySchema;
 
 // src/types/Message.ts
 var import_mongoose2 = __toESM(require("mongoose"));
+var MessageMetadataSchema = new import_mongoose2.Schema(
+  {
+    userFlaggedBy: [
+      {
+        type: import_mongoose2.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
+    adminFlaggedBy: [
+      {
+        type: import_mongoose2.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ]
+  },
+  { _id: false }
+  // Prevents nested _id creation inside metadata
+);
 var MessageSchema = new import_mongoose2.default.Schema(
   {
     userId: {
@@ -122,6 +141,10 @@ var MessageSchema = new import_mongoose2.default.Schema(
       type: [import_mongoose2.Schema.Types.ObjectId],
       ref: "User",
       default: []
+    },
+    metadata: {
+      type: MessageMetadataSchema,
+      default: {}
     }
   },
   { timestamps: true }
@@ -214,19 +237,26 @@ var Message_default = MessageSchema;
 
 // src/types/User.ts
 var import_mongoose3 = __toESM(require("mongoose"));
-var userSchema = new import_mongoose3.default.Schema({
-  // Use IUserDocument here
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  resetPasswordToken: { type: String },
-  resetPasswordTokenExpires: { type: Date },
-  avatar: { type: String },
-  description: { type: String },
-  organizationId: { type: import_mongoose3.default.Schema.Types.ObjectId, ref: "Organization", required: true },
-  role: { type: String, enum: ["admin", "member"], default: "member" },
-  organizationAddress: { type: String }
-}, { timestamps: true });
+var userSchema = new import_mongoose3.default.Schema(
+  {
+    // Use IUserDocument here
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    resetPasswordToken: { type: String },
+    resetPasswordTokenExpires: { type: Date },
+    avatar: { type: String },
+    description: { type: String },
+    organizationId: {
+      type: import_mongoose3.default.Schema.Types.ObjectId,
+      ref: "Organization",
+      required: true
+    },
+    role: { type: String, enum: ["admin", "member"], default: "member" },
+    organizationAddress: { type: String }
+  },
+  { timestamps: true }
+);
 userSchema.set("toJSON", {
   transform: (doc, ret, options) => {
     ret.id = ret._id.toString();
@@ -246,56 +276,61 @@ var User_default = userSchema;
 
 // src/types/Conversation.ts
 var import_mongoose4 = __toESM(require("mongoose"));
-var ConversationSchema = new import_mongoose4.default.Schema({
-  type: {
-    type: String,
-    enum: ["direct", "channel"],
-    required: true
-  },
-  participants: {
-    type: [{
+var ConversationSchema = new import_mongoose4.default.Schema(
+  {
+    type: {
+      type: String,
+      enum: ["direct", "channel"],
+      required: true
+    },
+    participants: {
+      type: [
+        {
+          type: import_mongoose4.default.Schema.Types.ObjectId,
+          ref: "User"
+        }
+      ],
+      required: function() {
+        return this.type === "direct";
+      }
+    },
+    organizationId: {
       type: import_mongoose4.default.Schema.Types.ObjectId,
-      ref: "User"
-    }],
-    required: function() {
-      return this.type === "direct";
+      ref: "Organization",
+      required: true
+    },
+    name: {
+      type: String,
+      // Only required for 'channel' type
+      required: function() {
+        return this.type === "channel";
+      }
+    },
+    description: {
+      type: String
+      // Optional for 'channel' type
+    },
+    uniqueKey: {
+      type: String,
+      unique: true,
+      sparse: true
+      // Only applicable for direct conversations
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now
+    },
+    archived: {
+      type: Boolean,
+      default: false
     }
   },
-  organizationId: {
-    type: import_mongoose4.default.Schema.Types.ObjectId,
-    ref: "Organization",
-    required: true
-  },
-  name: {
-    type: String,
-    // Only required for 'channel' type
-    required: function() {
-      return this.type === "channel";
-    }
-  },
-  description: {
-    type: String
-    // Optional for 'channel' type
-  },
-  uniqueKey: {
-    type: String,
-    unique: true,
-    sparse: true
-    // Only applicable for direct conversations
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  },
-  archived: {
-    type: Boolean,
-    default: false
-  }
-}, { timestamps: true });
+  { timestamps: true }
+);
 ConversationSchema.pre("save", function(next) {
   if (this.type === "direct") {
     const sortedParticipants = this.participants.map((id) => id.toString()).sort();
@@ -303,7 +338,10 @@ ConversationSchema.pre("save", function(next) {
   }
   next();
 });
-ConversationSchema.index({ uniqueKey: 1, organizationId: 1 }, { unique: true, sparse: true });
+ConversationSchema.index(
+  { uniqueKey: 1, organizationId: 1 },
+  { unique: true, sparse: true }
+);
 ConversationSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
@@ -317,9 +355,12 @@ var Conversation_default = ConversationSchema;
 
 // src/types/Organization.ts
 var import_mongoose5 = __toESM(require("mongoose"));
-var organizationSchema = new import_mongoose5.default.Schema({
-  name: { type: String, required: true }
-}, { timestamps: true });
+var organizationSchema = new import_mongoose5.default.Schema(
+  {
+    name: { type: String, required: true }
+  },
+  { timestamps: true }
+);
 organizationSchema.set("toJSON", {
   transform: (doc, ret, options) => {
     ret.id = ret._id.toString();
@@ -372,6 +413,7 @@ var DirectMessage_default = DirectMessageSchema;
 0 && (module.exports = {
   DirectMessageSchema,
   MessageHistorySchema,
+  MessageMetadataSchema,
   conversationSchema,
   messageSchema,
   organizationSchema,

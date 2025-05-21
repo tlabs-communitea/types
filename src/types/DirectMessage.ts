@@ -1,6 +1,8 @@
 // src/models/DirectMessage.ts
 import mongoose from 'mongoose';
 
+//REDUNDENT CODE IGNORE
+
 const { Schema } = mongoose;
 
 const DirectMessageSchema = new Schema(

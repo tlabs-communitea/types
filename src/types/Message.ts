@@ -24,7 +24,7 @@ export const MessageMetadataSchema = new Schema<MessageMetadata>(
   { _id: false } // Prevents nested _id creation inside metadata
 );
 export interface IMessage extends Document {
-  channelId?: Types.ObjectId;
+//   channelId?: Types.ObjectId; depricated 
   conversationId?: Types.ObjectId;
   userId: Types.ObjectId;
   content?: string;

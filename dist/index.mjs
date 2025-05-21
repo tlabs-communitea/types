@@ -195,6 +195,10 @@ var Message_default = MessageSchema;
 
 // src/types/User.ts
 import mongoose3 from "mongoose";
+var ROLES = {
+  ADMIN: "admin",
+  MEMBER: "member"
+};
 var userSchema = new mongoose3.Schema(
   {
     // Use IUserDocument here
@@ -371,6 +375,7 @@ export {
   DirectMessage_default as DirectMessageSchema,
   MessageHistory_default as MessageHistorySchema,
   MessageMetadataSchema,
+  ROLES,
   Conversation_default as conversationSchema,
   Message_default as messageSchema,
   Organization_default as organizationSchema,

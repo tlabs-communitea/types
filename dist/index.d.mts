@@ -49,7 +49,6 @@ declare const MessageMetadataSchema: mongoose.Schema<MessageMetadata, mongoose.M
     __v: number;
 }>;
 interface IMessage extends Document {
-    channelId?: Types.ObjectId;
     conversationId?: Types.ObjectId;
     userId: Types.ObjectId;
     content?: string;
@@ -115,6 +114,11 @@ declare const MessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, 
     __v: number;
 }>;
 
+declare const ROLES: {
+    readonly ADMIN: "admin";
+    readonly MEMBER: "member";
+};
+type Role = typeof ROLES[keyof typeof ROLES];
 interface IUser {
     name: string;
     email: string;
@@ -124,7 +128,7 @@ interface IUser {
     avatar?: string;
     description?: string;
     organizationId: Types.ObjectId;
-    role: 'admin' | 'member';
+    role: Role;
     organizationAddress?: string;
     createdAt?: Date;
     updatedAt?: Date;
@@ -248,4 +252,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { DirectMessageSchema, type IConversation, type IMessage, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, MessageHistorySchema, type MessageMetadata, MessageMetadataSchema, ConversationSchema as conversationSchema, MessageSchema as messageSchema, organizationSchema, userSchema };
+export { DirectMessageSchema, type IConversation, type IMessage, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, MessageHistorySchema, type MessageMetadata, MessageMetadataSchema, ROLES, type Role, ConversationSchema as conversationSchema, MessageSchema as messageSchema, organizationSchema, userSchema };

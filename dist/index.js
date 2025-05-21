@@ -33,6 +33,7 @@ __export(index_exports, {
   DirectMessageSchema: () => DirectMessage_default,
   MessageHistorySchema: () => MessageHistory_default,
   MessageMetadataSchema: () => MessageMetadataSchema,
+  ROLES: () => ROLES,
   conversationSchema: () => Conversation_default,
   messageSchema: () => Message_default,
   organizationSchema: () => Organization_default,
@@ -237,6 +238,10 @@ var Message_default = MessageSchema;
 
 // src/types/User.ts
 var import_mongoose3 = __toESM(require("mongoose"));
+var ROLES = {
+  ADMIN: "admin",
+  MEMBER: "member"
+};
 var userSchema = new import_mongoose3.default.Schema(
   {
     // Use IUserDocument here
@@ -414,6 +419,7 @@ var DirectMessage_default = DirectMessageSchema;
   DirectMessageSchema,
   MessageHistorySchema,
   MessageMetadataSchema,
+  ROLES,
   conversationSchema,
   messageSchema,
   organizationSchema,

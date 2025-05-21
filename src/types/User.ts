@@ -1,5 +1,12 @@
 import mongoose, { Model, Types, Document } from 'mongoose';
 
+export const ROLES = {
+  ADMIN: 'admin',
+  MEMBER: 'member',
+} as const;
+
+export type Role = typeof ROLES[keyof typeof ROLES];
+
 // This interface represents the shape of the User document in MongoDB
 export interface IUser {
   name: string;
@@ -10,11 +17,11 @@ export interface IUser {
   avatar?: string;
   description?: string;
   organizationId: Types.ObjectId;
-  role: 'admin' | 'member';
+  role: Role;
   organizationAddress?: string;
   createdAt?: Date;
   updatedAt?: Date;
-}
+} 
 
 // This interface includes Mongoose Document properties like _id, and methods.
 export interface IUserDocument extends IUser, Document {

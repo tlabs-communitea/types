@@ -1,6 +1,28 @@
 // src/models/Message.ts
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
+export interface MessageMetadata {
+  userFlaggedBy: Types.ObjectId[];
+  adminFlaggedBy: Types.ObjectId[];
+}
+
+export const MessageMetadataSchema = new Schema<MessageMetadata>(
+  {
+    userFlaggedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    adminFlaggedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+  },
+  { _id: false } // Prevents nested _id creation inside metadata
+);
 export interface IMessage extends Document {
   channelId?: Types.ObjectId;
   conversationId?: Types.ObjectId;
@@ -13,6 +35,7 @@ export interface IMessage extends Document {
   likedBy: Types.ObjectId[];
   parentMessageId?: Types.ObjectId;
   replies?: IMessage[]; // Virtual field for replies
+  metadata?: MessageMetadata; // Optional metadata field
 }
 
 const MessageSchema = new mongoose.Schema(
@@ -66,6 +89,10 @@ const MessageSchema = new mongoose.Schema(
       type: [Schema.Types.ObjectId],
       ref: 'User',
       default: [],
+    },
+    metadata: {
+      type: MessageMetadataSchema,
+      default: {},
     },
   },
   { timestamps: true }

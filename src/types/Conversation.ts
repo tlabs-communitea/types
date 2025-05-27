@@ -1,19 +1,6 @@
 // src/models/Conversation.ts
-
-import mongoose, { Schema, Document } from 'mongoose';
-import { IUserDocument } from './User';
-
-export interface IConversation extends Document {
-  type: 'channel' | 'direct';
-  name?: string; // Required for channels
-  description?: string; // Optional for channels
-  participants?: IUserDocument[]; // Optional for channels
-  organizationId: mongoose.Types.ObjectId;
-  uniqueKey?: string; // For direct conversations only
-  createdAt: Date;
-  updatedAt: Date;
-  archived: boolean;
-}
+import { IConversation } from "../conversationDTO/types";
+import mongoose from "mongoose";
 
 const ConversationSchema = new mongoose.Schema(
   {
@@ -86,15 +73,15 @@ ConversationSchema.index(
   { unique: true, sparse: true }
 );
 
-// Add toJSON transformation to include 'id' field and remove '_id'
-ConversationSchema.set('toJSON', {
-  virtuals: true,
-  versionKey: false,
-  transform: function (doc, ret) {
-    ret.id = ret._id.toString();
-    delete ret._id;
-    delete ret.__v;
-  },
-});
+// // Add toJSON transformation to include 'id' field and remove '_id'
+// ConversationSchema.set('toJSON', {
+//   virtuals: true,
+//   versionKey: false,
+//   transform: function (doc, ret) {
+//     ret.id = ret._id.toString();
+//     delete ret._id;
+//     delete ret.__v;
+//   },
+// });
 
 export default ConversationSchema;

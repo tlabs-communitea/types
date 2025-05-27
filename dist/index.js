@@ -34,10 +34,15 @@ __export(index_exports, {
   MessageHistorySchema: () => MessageHistory_default,
   MessageMetadataSchema: () => MessageMetadataSchema,
   ROLES: () => ROLES,
+  TYPE_OF_CHANNEL: () => TYPE_OF_CHANNEL,
   conversationSchema: () => Conversation_default,
+  conversationTransformToDTO: () => conversationTransformToDTO,
   messageSchema: () => Message_default,
   organizationSchema: () => Organization_default,
-  userSchema: () => User_default
+  transformToMessageDTO: () => transformToMessageDTO,
+  transformToOrganizationDTO: () => transformToOrganizationDTO,
+  userSchema: () => User_default,
+  userTransformToDTO: () => userTransformToDTO
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -72,7 +77,7 @@ var MessageHistorySchema = new import_mongoose.default.Schema(
 var MessageHistory_default = MessageHistorySchema;
 
 // src/types/Message.ts
-var import_mongoose2 = __toESM(require("mongoose"));
+var import_mongoose2 = require("mongoose");
 var MessageMetadataSchema = new import_mongoose2.Schema(
   {
     userFlaggedBy: [
@@ -91,7 +96,7 @@ var MessageMetadataSchema = new import_mongoose2.Schema(
   { _id: false }
   // Prevents nested _id creation inside metadata
 );
-var MessageSchema = new import_mongoose2.default.Schema(
+var MessageSchema = new import_mongoose2.Schema(
   {
     userId: {
       type: import_mongoose2.Schema.Types.ObjectId,
@@ -116,12 +121,6 @@ var MessageSchema = new import_mongoose2.default.Schema(
       type: import_mongoose2.Schema.Types.ObjectId,
       ref: "Conversation",
       required: true,
-      index: true
-    },
-    channelId: {
-      type: import_mongoose2.Schema.Types.ObjectId,
-      ref: "Channel",
-      default: null,
       index: true
     },
     parentMessageId: {
@@ -151,8 +150,8 @@ var MessageSchema = new import_mongoose2.default.Schema(
   { timestamps: true }
 );
 MessageSchema.pre("validate", function(next) {
-  if (!this.conversationId && !this.channelId) {
-    next(new Error("Either conversationId or channelId must be provided."));
+  if (!this.conversationId) {
+    next(new Error("ConversationId must be provided."));
   } else {
     next();
   }
@@ -161,73 +160,6 @@ MessageSchema.virtual("replies", {
   ref: "Message",
   localField: "_id",
   foreignField: "parentMessageId"
-});
-MessageSchema.set("toJSON", {
-  virtuals: true,
-  transform: (doc, ret) => {
-    ret.id = ret._id.toString();
-    ret.channelId = ret.channelId ? ret.channelId.toString() : null;
-    ret.conversationId = ret.conversationId ? ret.conversationId.toString() : null;
-    ret.userId = ret.userId ? ret.userId.toString() : null;
-    ret.parentMessageId = ret.parentMessageId ? ret.parentMessageId.toString() : null;
-    ret.likedBy = ret.likedBy.map((id) => id.toString());
-    ret.content = ret.content.toString() || "";
-    ret.fileUrl = ret.fileUrl.toString();
-    ret.fileName = ret.fileName.toString();
-    ret.createdAt = ret.createdAt instanceof Date ? ret.createdAt.toISOString() : ret.createdAt;
-    ret.updatedAt = ret.updatedAt instanceof Date ? ret.updatedAt.toISOString() : ret.updatedAt;
-    if (ret.replies && Array.isArray(ret.replies)) {
-      ret.replies = ret.replies.map((reply) => ({
-        id: reply._id ? reply._id.toString() : void 0,
-        userId: reply.userId ? reply.userId.toString() : null,
-        content: reply.content,
-        fileUrl: reply.fileUrl,
-        fileName: reply.fileName,
-        conversationId: reply.conversationId ? reply.conversationId.toString() : null,
-        channelId: reply.channelId ? reply.channelId.toString() : null,
-        parentMessageId: reply.parentMessageId ? reply.parentMessageId.toString() : null,
-        createdAt: reply.createdAt instanceof Date ? reply.createdAt.toISOString() : reply.createdAt,
-        updatedAt: reply.updatedAt instanceof Date ? reply.updatedAt.toISOString() : reply.updatedAt,
-        likes: reply.likes || 0
-      }));
-    }
-    delete ret._id;
-    delete ret.__v;
-  }
-});
-MessageSchema.set("toObject", {
-  virtuals: true,
-  transform: (doc, ret) => {
-    ret.id = ret._id.toString();
-    ret.channelId = ret.channelId ? ret.channelId.toString() : null;
-    ret.conversationId = ret.conversationId ? ret.conversationId.toString() : null;
-    ret.userId = ret.userId ? ret.userId.toString() : null;
-    ret.parentMessageId = ret.parentMessageId ? ret.parentMessageId.toString() : null;
-    ret.likedBy = ret.likedBy.map((id) => id.toString());
-    ret.content = ret.content || "";
-    ret.fileUrl = ret.fileUrl.toString();
-    ret.fileName = ret.fileName.toString();
-    ret.createdAt = ret.createdAt instanceof Date ? ret.createdAt.toISOString() : ret.createdAt;
-    ret.updatedAt = ret.updatedAt instanceof Date ? ret.updatedAt.toISOString() : ret.updatedAt;
-    ret.content = ret.content || "";
-    if (ret.replies && Array.isArray(ret.replies)) {
-      ret.replies = ret.replies.map((reply) => ({
-        id: reply._id ? reply._id.toString() : void 0,
-        userId: reply.userId ? reply.userId.toString() : null,
-        content: reply.content,
-        fileUrl: reply.fileUrl,
-        fileName: reply.fileName,
-        conversationId: reply.conversationId ? reply.conversationId.toString() : null,
-        channelId: reply.channelId ? reply.channelId.toString() : null,
-        parentMessageId: reply.parentMessageId ? reply.parentMessageId.toString() : null,
-        createdAt: reply.createdAt instanceof Date ? reply.createdAt.toISOString() : reply.createdAt,
-        updatedAt: reply.updatedAt instanceof Date ? reply.updatedAt.toISOString() : reply.updatedAt,
-        likes: reply.likes || 0
-      }));
-    }
-    delete ret._id;
-    delete ret.__v;
-  }
 });
 MessageSchema.index({ content: "text" });
 MessageSchema.pre(/^find/, function(next) {
@@ -238,10 +170,14 @@ var Message_default = MessageSchema;
 
 // src/types/User.ts
 var import_mongoose3 = __toESM(require("mongoose"));
+
+// src/userDTO/types.ts
 var ROLES = {
   ADMIN: "admin",
   MEMBER: "member"
 };
+
+// src/types/User.ts
 var userSchema = new import_mongoose3.default.Schema(
   {
     // Use IUserDocument here
@@ -257,26 +193,11 @@ var userSchema = new import_mongoose3.default.Schema(
       ref: "Organization",
       required: true
     },
-    role: { type: String, enum: ["admin", "member"], default: "member" },
+    role: { type: String, enum: ROLES, default: ROLES.MEMBER },
     organizationAddress: { type: String }
   },
   { timestamps: true }
 );
-userSchema.set("toJSON", {
-  transform: (doc, ret, options) => {
-    ret.id = ret._id.toString();
-    ret.organizationId = ret.organizationId ? ret.organizationId.toString() : null;
-    ret.createdAt = ret.createdAt ? ret.createdAt.toString() : null;
-    ret.updatedAt = ret.updatedAt ? ret.updatedAt.toString() : null;
-    ret.description = ret.description ? ret.description.toString() : null;
-    ret.avatar = ret.avatar ? ret.avatar.toString() : null;
-    ret.organizationAddress = ret.organizationAddress ? ret.organizationAddress.toString() : null;
-    delete ret._id;
-    delete ret.__v;
-    delete ret.password;
-    return ret;
-  }
-});
 var User_default = userSchema;
 
 // src/types/Conversation.ts
@@ -347,15 +268,6 @@ ConversationSchema.index(
   { uniqueKey: 1, organizationId: 1 },
   { unique: true, sparse: true }
 );
-ConversationSchema.set("toJSON", {
-  virtuals: true,
-  versionKey: false,
-  transform: function(doc, ret) {
-    ret.id = ret._id.toString();
-    delete ret._id;
-    delete ret.__v;
-  }
-});
 var Conversation_default = ConversationSchema;
 
 // src/types/Organization.ts
@@ -366,27 +278,105 @@ var organizationSchema = new import_mongoose5.default.Schema(
   },
   { timestamps: true }
 );
-organizationSchema.set("toJSON", {
-  transform: (doc, ret, options) => {
-    ret.id = ret._id.toString();
-    delete ret._id;
-    delete ret.__v;
-  }
-});
 var Organization_default = organizationSchema;
+
+// src/messagesDTO/MessageTransform.ts
+function mapObjectIdsToStrings(ids) {
+  return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
+}
+var transformToMessageDTO = (message) => {
+  let flattened_replies = [];
+  if (message.replies && Array.isArray(message.replies)) {
+    flattened_replies = message.replies.map((reply) => transformToMessageDTO(reply));
+  }
+  let flattened_msg = {
+    id: message._id._id.toString(),
+    metadata: message?.metadata ? {
+      userFlaggedBy: mapObjectIdsToStrings(message.metadata.userFlaggedBy),
+      adminFlaggedBy: mapObjectIdsToStrings(
+        message.metadata.adminFlaggedBy
+      )
+    } : null,
+    conversationId: message.conversationId ? message.conversationId.toString() : null,
+    // channelId: message.channelId ? message.channelId.toString() : null, depricated
+    userId: message.userId ? message.userId.toString() : null,
+    content: message.content || "",
+    fileUrl: message.fileUrl ? message.fileUrl.toString() : null,
+    fileName: message.fileName ? message.fileName.toString() : null,
+    parentMessageId: message.parentMessageId ? message.parentMessageId.toString() : null,
+    createdAt: message.createdAt.toISOString(),
+    updatedAt: message.updatedAt.toISOString(),
+    likedBy: message.likedBy ? message.likedBy.map((id) => id.toString()) : [],
+    replies: flattened_replies
+  };
+  return flattened_msg;
+};
+
+// src/conversationDTO/types.ts
+var TYPE_OF_CHANNEL = {
+  channel: "channel",
+  direct: "direct"
+};
+
+// src/userDTO/UserTransform.ts
+var userTransformToDTO = (user) => {
+  const transformedUser = {
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    password: user.password,
+    resetPasswordToken: user.resetPasswordToken || null,
+    resetPasswordTokenExpires: user.resetPasswordTokenExpires ? user.resetPasswordTokenExpires.toISOString() : null,
+    avatar: user.avatar || null,
+    description: user.description || null,
+    organizationId: user.organizationId.toString(),
+    role: user.role,
+    organizationAddress: user.organizationAddress || null,
+    createdAt: user.createdAt.toISOString(),
+    updatedAt: user.updatedAt.toISOString()
+  };
+  return transformedUser;
+};
+
+// src/conversationDTO/ConversationTransform.ts
+var conversationTransformToDTO = (conversation) => {
+  const transformedConversation = {
+    id: conversation._id.toString(),
+    type: conversation.type,
+    description: conversation.description || null,
+    name: conversation.name || null,
+    organizationId: conversation.organizationId.toString(),
+    uniqueKey: conversation.uniqueKey || null,
+    archived: conversation.archived || false,
+    createdAt: conversation.createdAt.toISOString(),
+    updatedAt: conversation.updatedAt.toISOString(),
+    participants: conversation.participants ? conversation.participants.map(userTransformToDTO) : []
+  };
+  return transformedConversation;
+};
+
+// src/organizationDTO/OrganizationTransform.ts
+var transformToOrganizationDTO = (organization) => {
+  return {
+    id: organization.id,
+    name: organization.name,
+    createdAt: organization.createdAt.toISOString(),
+    updatedAt: organization.updatedAt.toISOString()
+  };
+};
 
 // src/types/DirectMessage.ts
 var import_mongoose6 = __toESM(require("mongoose"));
-var { Schema: Schema4 } = import_mongoose6.default;
-var DirectMessageSchema = new Schema4(
+var { Schema: Schema3 } = import_mongoose6.default;
+var DirectMessageSchema = new Schema3(
   {
     conversationId: {
-      type: Schema4.Types.ObjectId,
+      type: Schema3.Types.ObjectId,
       ref: "Conversation",
       required: true
     },
     senderId: {
-      type: Schema4.Types.ObjectId,
+      type: Schema3.Types.ObjectId,
       ref: "User",
       required: true
     },
@@ -420,8 +410,13 @@ var DirectMessage_default = DirectMessageSchema;
   MessageHistorySchema,
   MessageMetadataSchema,
   ROLES,
+  TYPE_OF_CHANNEL,
   conversationSchema,
+  conversationTransformToDTO,
   messageSchema,
   organizationSchema,
-  userSchema
+  transformToMessageDTO,
+  transformToOrganizationDTO,
+  userSchema,
+  userTransformToDTO
 });

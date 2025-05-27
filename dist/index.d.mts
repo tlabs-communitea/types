@@ -224,7 +224,7 @@ interface IConversation extends Document {
     type: TYPE_OF_CHANNEL;
     name?: string;
     description?: string;
-    participants?: IUserDocument[];
+    participants?: mongoose.Types.ObjectId[];
     organizationId: mongoose.Types.ObjectId;
     uniqueKey?: string;
     createdAt: Date;
@@ -236,7 +236,7 @@ interface ConversationDTO {
     type: TYPE_OF_CHANNEL;
     name: string | null;
     description: string | null;
-    participants: UserDTO[];
+    participants: string[];
     organizationId: string;
     uniqueKey: string | null;
     createdAt: string;

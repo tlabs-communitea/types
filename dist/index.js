@@ -318,6 +318,33 @@ var TYPE_OF_CHANNEL = {
   direct: "direct"
 };
 
+// src/conversationDTO/ConversationTransform.ts
+var conversationTransformToDTO = (conversation) => {
+  const transformedConversation = {
+    id: conversation._id.toString(),
+    type: conversation.type,
+    description: conversation?.description || null,
+    name: conversation?.name || null,
+    organizationId: conversation.organizationId.toString(),
+    uniqueKey: conversation?.uniqueKey || null,
+    archived: conversation.archived || false,
+    createdAt: conversation.createdAt.toISOString(),
+    updatedAt: conversation.updatedAt.toISOString(),
+    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : []
+  };
+  return transformedConversation;
+};
+
+// src/organizationDTO/OrganizationTransform.ts
+var transformToOrganizationDTO = (organization) => {
+  return {
+    id: organization.id,
+    name: organization.name,
+    createdAt: organization.createdAt.toISOString(),
+    updatedAt: organization.updatedAt.toISOString()
+  };
+};
+
 // src/userDTO/UserTransform.ts
 var userTransformToDTO = (user) => {
   const transformedUser = {
@@ -336,33 +363,6 @@ var userTransformToDTO = (user) => {
     updatedAt: user.updatedAt.toISOString()
   };
   return transformedUser;
-};
-
-// src/conversationDTO/ConversationTransform.ts
-var conversationTransformToDTO = (conversation) => {
-  const transformedConversation = {
-    id: conversation._id.toString(),
-    type: conversation.type,
-    description: conversation.description || null,
-    name: conversation.name || null,
-    organizationId: conversation.organizationId.toString(),
-    uniqueKey: conversation.uniqueKey || null,
-    archived: conversation.archived || false,
-    createdAt: conversation.createdAt.toISOString(),
-    updatedAt: conversation.updatedAt.toISOString(),
-    participants: conversation.participants ? conversation.participants.map(userTransformToDTO) : []
-  };
-  return transformedConversation;
-};
-
-// src/organizationDTO/OrganizationTransform.ts
-var transformToOrganizationDTO = (organization) => {
-  return {
-    id: organization.id,
-    name: organization.name,
-    createdAt: organization.createdAt.toISOString(),
-    updatedAt: organization.updatedAt.toISOString()
-  };
 };
 
 // src/types/DirectMessage.ts

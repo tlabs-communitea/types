@@ -13,7 +13,7 @@ export interface IConversation extends Document {
   type: TYPE_OF_CHANNEL;
   name?: string; // Required for channels
   description?: string; // Optional for channels
-  participants?: IUserDocument[]; // Optional for channels
+  participants?: mongoose.Types.ObjectId[]; // Optional for channels
   organizationId: mongoose.Types.ObjectId;
   uniqueKey?: string; // For direct conversations only
   createdAt: Date;
@@ -26,7 +26,7 @@ export interface ConversationDTO {
     type: TYPE_OF_CHANNEL;
     name: string | null; // Required for channels
     description: string | null; // Optional for channels
-    participants: UserDTO[]; // Optional for channels
+    participants: string[]; // Optional for channels
     organizationId: string;
     uniqueKey: string | null; // For direct conversations only
     createdAt: string;

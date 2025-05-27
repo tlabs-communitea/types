@@ -14,14 +14,14 @@ export const conversationTransformToDTO = (
   const transformedConversation: ConversationDTO = {
     id: (conversation._id as mongoose.Types.ObjectId).toString(),
     type: conversation.type,
-    description: conversation.description || null,
-    name: conversation.name || null,
+    description: conversation?.description || null,
+    name: conversation?.name || null,
     organizationId: conversation.organizationId.toString(),
-    uniqueKey: conversation.uniqueKey || null,
+    uniqueKey: conversation?.uniqueKey || null,
     archived: conversation.archived || false,
     createdAt: conversation.createdAt.toISOString(),
     updatedAt: conversation.updatedAt.toISOString(),
-    participants: conversation.participants ? conversation.participants.map(userTransformToDTO) : []
+    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : []
 
   };
   return transformedConversation;

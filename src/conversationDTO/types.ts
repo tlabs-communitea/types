@@ -9,7 +9,7 @@ export const TYPE_OF_CHANNEL = {
 
 export type TYPE_OF_CHANNEL = typeof TYPE_OF_CHANNEL[keyof typeof TYPE_OF_CHANNEL];
 
-export interface IConversation extends Document {
+export interface IConversationDocument extends Document {
   type: TYPE_OF_CHANNEL;
   name?: string; // Required for channels
   description?: string; // Optional for channels
@@ -20,6 +20,9 @@ export interface IConversation extends Document {
   updatedAt: Date;
   archived: boolean; //defaults to false
 }
+
+type MongooseSpecificTypes = keyof Document;
+export type CreateConversation = Omit<IConversationDocument, MongooseSpecificTypes>;
 
 export interface ConversationDTO {
     id: string;

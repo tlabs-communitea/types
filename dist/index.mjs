@@ -98,8 +98,8 @@ var MessageSchema = new Schema2(
       type: MessageMetadataSchema,
       default: {}
     }
-  },
-  { timestamps: true }
+  }
+  // { timestamps: true } //no need as manually handling timestamps 
 );
 MessageSchema.pre("validate", function(next) {
   if (!this.conversationId) {
@@ -154,11 +154,19 @@ var User_default = userSchema;
 
 // src/types/Conversation.ts
 import mongoose4 from "mongoose";
+
+// src/conversationDTO/types.ts
+var TYPE_OF_CHANNEL = {
+  channel: "channel",
+  direct: "direct"
+};
+
+// src/types/Conversation.ts
 var ConversationSchema = new mongoose4.Schema(
   {
     type: {
       type: String,
-      enum: ["direct", "channel"],
+      enum: TYPE_OF_CHANNEL,
       required: true
     },
     participants: {
@@ -169,7 +177,7 @@ var ConversationSchema = new mongoose4.Schema(
         }
       ],
       required: function() {
-        return this.type === "direct";
+        return this.type === TYPE_OF_CHANNEL.direct;
       }
     },
     organizationId: {
@@ -181,7 +189,7 @@ var ConversationSchema = new mongoose4.Schema(
       type: String,
       // Only required for 'channel' type
       required: function() {
-        return this.type === "channel";
+        return this.type === TYPE_OF_CHANNEL.channel;
       }
     },
     description: {
@@ -210,7 +218,7 @@ var ConversationSchema = new mongoose4.Schema(
   { timestamps: true }
 );
 ConversationSchema.pre("save", function(next) {
-  if (this.type === "direct") {
+  if (this.type === TYPE_OF_CHANNEL.direct) {
     const sortedParticipants = this.participants.map((id) => id.toString()).sort();
     this.uniqueKey = sortedParticipants.join("_");
   }
@@ -262,12 +270,6 @@ var transformToMessageDTO = (message) => {
     replies: flattened_replies
   };
   return flattened_msg;
-};
-
-// src/conversationDTO/types.ts
-var TYPE_OF_CHANNEL = {
-  channel: "channel",
-  direct: "direct"
 };
 
 // src/conversationDTO/ConversationTransform.ts

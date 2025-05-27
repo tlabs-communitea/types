@@ -1,5 +1,5 @@
 import mongoose, { Types } from 'mongoose';
-import { ConversationDTO, IConversation } from './types';
+import { ConversationDTO, IConversationDocument } from './types';
 import { userTransformToDTO } from '../userDTO/UserTransform';
 
 function mapObjectIdsToStrings(
@@ -9,7 +9,7 @@ function mapObjectIdsToStrings(
 }
 
 export const conversationTransformToDTO = (
-  conversation: IConversation
+  conversation: IConversationDocument
 ): ConversationDTO => {
   const transformedConversation: ConversationDTO = {
     id: (conversation._id as mongoose.Types.ObjectId).toString(),

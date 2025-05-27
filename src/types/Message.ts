@@ -1,6 +1,6 @@
 // src/models/Message.ts
 import mongoose, { Schema, Document, Types } from 'mongoose';
-import { IMessage, MessageMetadata } from '../messagesDTO/types';
+import { IMessageDocument, MessageMetadata } from '../messagesDTO/types';
 
 export const MessageMetadataSchema = new Schema<MessageMetadata>(
   {
@@ -20,7 +20,7 @@ export const MessageMetadataSchema = new Schema<MessageMetadata>(
   { _id: false } // Prevents nested _id creation inside metadata
 );
 
-const MessageSchema = new Schema<IMessage>(
+const MessageSchema = new Schema<IMessageDocument>(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -71,7 +71,7 @@ const MessageSchema = new Schema<IMessage>(
       default: {},
     },
   },
-  { timestamps: true }
+  // { timestamps: true } //no need as manually handling timestamps 
 );
 
 // Custom validation to ensure either conversationId or channelId is provided

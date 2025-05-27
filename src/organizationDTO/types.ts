@@ -7,6 +7,10 @@ export interface IOrganization {
 
 export interface IOrganizationDocument extends IOrganization, Document {}
 
+type MongooseSpecificTypes = keyof Document;
+export type CreateOrganization = Omit<IOrganizationDocument, MongooseSpecificTypes>;
+
+
 export interface OrganizationDTO {
   id: string;
   name: string;

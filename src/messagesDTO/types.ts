@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { Document } from "mongoose";
-export interface IMessage extends Document {
+export interface IMessageDocument extends Document {
   conversationId?: Types.ObjectId;
   userId: Types.ObjectId;
   content?: string;
@@ -10,9 +10,12 @@ export interface IMessage extends Document {
   updatedAt: Date;
   likedBy: Types.ObjectId[];
   parentMessageId?: Types.ObjectId;
-  replies?: IMessage[]; // Virtual field for replies, populated only after a find query, doesn't exist separately in the db
+  replies?: IMessageDocument[]; // Virtual field for replies, populated only after a find query, doesn't exist separately in the db
   metadata?: MessageMetadata; // Optional metadata field
 }
+
+type MongooseSpecificTypes = keyof Document;
+export type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes>;
 
 export interface MessageMetadata {
   userFlaggedBy: Types.ObjectId[];

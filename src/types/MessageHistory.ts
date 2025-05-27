@@ -1,6 +1,7 @@
 // models/MessageHistory.js
 import mongoose, { Schema, Document } from 'mongoose';
 
+//REDUNDENT CODE IGNORE 
 const MessageHistorySchema = new mongoose.Schema(
   {
     messageId: {

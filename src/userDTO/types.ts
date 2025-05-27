@@ -30,6 +30,11 @@ export interface IUserDocument extends IUser, Document {
   // comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
+type MongooseSpecificTypes = keyof Document;
+export type CreateUser = Omit<IUserDocument, MongooseSpecificTypes>;
+
+
+
 export interface UserDTO {
     id: string;
     name: string;

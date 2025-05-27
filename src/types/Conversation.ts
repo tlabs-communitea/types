@@ -1,12 +1,12 @@
 // src/models/Conversation.ts
-import { IConversation } from "../conversationDTO/types";
+import { IConversationDocument } from "../conversationDTO/types";
 import mongoose from "mongoose";
-
+import { TYPE_OF_CHANNEL } from "../conversationDTO/types";
 const ConversationSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ['direct', 'channel'],
+      enum: TYPE_OF_CHANNEL,
       required: true,
     },
     participants: {
@@ -16,8 +16,8 @@ const ConversationSchema = new mongoose.Schema(
           ref: 'User',
         },
       ],
-      required: function (this: IConversation) {
-        return this.type === 'direct';
+      required: function (this: IConversationDocument) {
+        return this.type === TYPE_OF_CHANNEL.direct;
       },
     },
     organizationId: {
@@ -27,8 +27,8 @@ const ConversationSchema = new mongoose.Schema(
     },
     name: {
       type: String, // Only required for 'channel' type
-      required: function (this: IConversation) {
-        return this.type === 'channel';
+      required: function (this: IConversationDocument) {
+        return this.type === TYPE_OF_CHANNEL.channel;
       },
     },
     description: {
@@ -57,7 +57,7 @@ const ConversationSchema = new mongoose.Schema(
 
 // Pre-save hook to set uniqueKey for direct conversations
 ConversationSchema.pre('save', function (next) {
-  if (this.type === 'direct') {
+  if (this.type === TYPE_OF_CHANNEL.direct) {
     // Sort participant IDs to ensure consistency
     const sortedParticipants = this.participants
       .map((id) => id.toString())

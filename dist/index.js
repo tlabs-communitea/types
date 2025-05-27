@@ -146,8 +146,8 @@ var MessageSchema = new import_mongoose2.Schema(
       type: MessageMetadataSchema,
       default: {}
     }
-  },
-  { timestamps: true }
+  }
+  // { timestamps: true } //no need as manually handling timestamps 
 );
 MessageSchema.pre("validate", function(next) {
   if (!this.conversationId) {
@@ -202,11 +202,19 @@ var User_default = userSchema;
 
 // src/types/Conversation.ts
 var import_mongoose4 = __toESM(require("mongoose"));
+
+// src/conversationDTO/types.ts
+var TYPE_OF_CHANNEL = {
+  channel: "channel",
+  direct: "direct"
+};
+
+// src/types/Conversation.ts
 var ConversationSchema = new import_mongoose4.default.Schema(
   {
     type: {
       type: String,
-      enum: ["direct", "channel"],
+      enum: TYPE_OF_CHANNEL,
       required: true
     },
     participants: {
@@ -217,7 +225,7 @@ var ConversationSchema = new import_mongoose4.default.Schema(
         }
       ],
       required: function() {
-        return this.type === "direct";
+        return this.type === TYPE_OF_CHANNEL.direct;
       }
     },
     organizationId: {
@@ -229,7 +237,7 @@ var ConversationSchema = new import_mongoose4.default.Schema(
       type: String,
       // Only required for 'channel' type
       required: function() {
-        return this.type === "channel";
+        return this.type === TYPE_OF_CHANNEL.channel;
       }
     },
     description: {
@@ -258,7 +266,7 @@ var ConversationSchema = new import_mongoose4.default.Schema(
   { timestamps: true }
 );
 ConversationSchema.pre("save", function(next) {
-  if (this.type === "direct") {
+  if (this.type === TYPE_OF_CHANNEL.direct) {
     const sortedParticipants = this.participants.map((id) => id.toString()).sort();
     this.uniqueKey = sortedParticipants.join("_");
   }
@@ -310,12 +318,6 @@ var transformToMessageDTO = (message) => {
     replies: flattened_replies
   };
   return flattened_msg;
-};
-
-// src/conversationDTO/types.ts
-var TYPE_OF_CHANNEL = {
-  channel: "channel",
-  direct: "direct"
 };
 
 // src/conversationDTO/ConversationTransform.ts

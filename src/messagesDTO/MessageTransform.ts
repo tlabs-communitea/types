@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import type { MessageDTO, IMessage } from '../messagesDTO/types';
+import type { MessageDTO, IMessageDocument } from '../messagesDTO/types';
 
 function mapObjectIdsToStrings(
   ids: Types.ObjectId[] | null | undefined
@@ -12,7 +12,7 @@ function mapObjectIdsToStrings(
  * @param message of type IMessage
  * @returns MessageDTO type object ready for frontend consumption
  */
-export const transformToMessageDTO = (message: IMessage): MessageDTO => {
+export const transformToMessageDTO = (message: IMessageDocument): MessageDTO => {
   
   let flattened_replies: MessageDTO[] = [];
   //only single depth recursive call as Message model is defined to populate onyl 1 depth of replies

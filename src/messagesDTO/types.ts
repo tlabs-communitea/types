@@ -1,6 +1,7 @@
-import { Types } from "mongoose";
-import { Document } from "mongoose";
-export interface IMessageDocument extends Document {
+import { Types } from 'mongoose';
+import { Document } from 'mongoose';
+
+export interface IMessage {
   conversationId?: Types.ObjectId;
   userId: Types.ObjectId;
   content?: string;
@@ -10,9 +11,12 @@ export interface IMessageDocument extends Document {
   updatedAt: Date;
   likedBy: Types.ObjectId[];
   parentMessageId?: Types.ObjectId;
-  replies?: IMessageDocument[]; // Virtual field for replies, populated only after a find query, doesn't exist separately in the db
+  replies?: IMessageDocument[]; // Virtual field for replies, populated only after a find query, doesn't exist separately in the db 
+  //NOTE: Don't use .lean() with replies populating, fetch replies fully as IMessageDocument[], else typeError will occur
   metadata?: MessageMetadata; // Optional metadata field
 }
+
+export interface IMessageDocument extends Document, IMessage {}
 
 type MongooseSpecificTypes = keyof Document;
 export type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes>;
@@ -23,7 +27,7 @@ export interface MessageMetadata {
 }
 
 // -----------------
-//DTO's for frontend 
+//DTO's for frontend
 
 //metadata
 export interface MessageMetadataDTO {

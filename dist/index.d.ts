@@ -35,7 +35,7 @@ declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any
     __v: number;
 }>;
 
-interface IMessageDocument extends Document {
+interface IMessage {
     conversationId?: Types.ObjectId;
     userId: Types.ObjectId;
     content?: string;
@@ -47,6 +47,8 @@ interface IMessageDocument extends Document {
     parentMessageId?: Types.ObjectId;
     replies?: IMessageDocument[];
     metadata?: MessageMetadata;
+}
+interface IMessageDocument extends Document, IMessage {
 }
 type MongooseSpecificTypes$3 = keyof Document;
 type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes$3>;
@@ -226,8 +228,8 @@ declare const TYPE_OF_CHANNEL: {
     readonly channel: "channel";
     readonly direct: "direct";
 };
-type TYPE_OF_CHANNEL = typeof TYPE_OF_CHANNEL[keyof typeof TYPE_OF_CHANNEL];
-interface IConversationDocument extends Document {
+type TYPE_OF_CHANNEL = (typeof TYPE_OF_CHANNEL)[keyof typeof TYPE_OF_CHANNEL];
+interface IConversation {
     type: TYPE_OF_CHANNEL;
     name?: string;
     description?: string;
@@ -237,6 +239,8 @@ interface IConversationDocument extends Document {
     createdAt: Date;
     updatedAt: Date;
     archived: boolean;
+}
+interface IConversationDocument extends Document, IConversation {
 }
 type MongooseSpecificTypes = keyof Document;
 type CreateConversation = Omit<IConversationDocument, MongooseSpecificTypes>;
@@ -298,4 +302,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversationDocument, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserFields, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserFields, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO };

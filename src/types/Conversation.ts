@@ -39,6 +39,14 @@ const ConversationSchema = new mongoose.Schema(
       unique: true,
       sparse: true, // Only applicable for direct conversations
     },
+    adminFlagged: {
+      type: Boolean,
+      default: false,
+    },
+    adminHidden: {
+      type: Boolean,
+      default: false,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -46,10 +54,6 @@ const ConversationSchema = new mongoose.Schema(
     updatedAt: {
       type: Date,
       default: Date.now,
-    },
-    archived: {
-      type: Boolean,
-      default: false,
     },
   },
   { timestamps: true }

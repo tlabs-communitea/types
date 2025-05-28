@@ -181,3 +181,12 @@ async function getUserDTO(userId: string) {
   return null;
 }
 ```
+
+## Note:
+
+While fetching Messages, **do not use .lean()**
+Message fetching has a prehook that populates replies whenever a fetch query is made as IMessageDocument,
+Using .lean() will cause replies to be IMessage whereas it's defined to be IMessageDocument.
+When creating Messages, use CreateMessage type
+Use IMessageDocument as a type when fetching message documents from db
+(use select to specify types but don't use .lean())

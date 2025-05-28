@@ -115,6 +115,7 @@ interface IUserDocument extends IUser, Document {
 }
 type MongooseSpecificTypes$2 = keyof Document;
 type CreateUser = Omit<IUserDocument, MongooseSpecificTypes$2>;
+type PublicUserFields = Pick<IUser, 'name' | 'email' | 'avatar' | 'description'>;
 interface UserDTO {
     id: string;
     name: string;
@@ -251,6 +252,13 @@ interface ConversationDTO {
     updatedAt: string;
     archived: boolean;
 }
+interface ConversationDetailsDTO {
+    id: string;
+    name: string | null;
+    description: string | null;
+    members: PublicUserFields[];
+    admin: PublicUserFields;
+}
 
 declare const conversationTransformToDTO: (conversation: IConversationDocument) => ConversationDTO;
 
@@ -290,4 +298,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversationDocument, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversationDocument, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserFields, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO };

@@ -33,6 +33,7 @@ export interface IUserDocument extends IUser, Document {
 type MongooseSpecificTypes = keyof Document;
 export type CreateUser = Omit<IUserDocument, MongooseSpecificTypes>;
 
+export type PublicUserFields = Pick<IUser, 'name' | 'email' | 'avatar' | 'description'>;
 
 
 export interface UserDTO {

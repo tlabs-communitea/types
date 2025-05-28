@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
-import { IUserDocument, UserDTO } from '../userDTO/types';
+import { PublicUserFields } from '../userDTO/types';
 
 export const TYPE_OF_CHANNEL = {
     channel: 'channel',
@@ -35,4 +35,12 @@ export interface ConversationDTO {
     createdAt: string;
     updatedAt: string;
     archived: boolean; //defaults to false
+}
+
+export interface ConversationDetailsDTO {
+  id: string;
+  name:string | null;
+  description: string | null;
+  members: PublicUserFields[];
+  admin: PublicUserFields;
 }

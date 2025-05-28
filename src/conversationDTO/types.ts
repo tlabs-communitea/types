@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
+import { IUserDocument, UserDTO } from '../userDTO/types';
 
 export const TYPE_OF_CHANNEL = {
     channel: 'channel',
@@ -23,20 +24,12 @@ export interface IConversationDocument extends Document {
 type MongooseSpecificTypes = keyof Document;
 export type CreateConversation = Omit<IConversationDocument, MongooseSpecificTypes>;
 
-export interface ConversationParticipants {
-  userId: string;
-  name: string;
-  avatar: string | null;
-  description: string | null;
-  email: string;
-}
-
 export interface ConversationDTO {
     id: string;
     type: TYPE_OF_CHANNEL;
     name: string | null; // Required for channels
     description: string | null; // Optional for channels
-    participants: ConversationParticipants[]; // Optional for channels
+    participants: string[]; // Optional for channels
     organizationId: string;
     uniqueKey: string | null; // For direct conversations only
     createdAt: string;

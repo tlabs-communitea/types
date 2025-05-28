@@ -23,8 +23,8 @@ var MessageHistorySchema = new mongoose.Schema(
       ref: "User",
       required: true
     }
-  },
-  { timestamps: true }
+  }
+  // { timestamps: true }
 );
 var MessageHistory_default = MessageHistorySchema;
 
@@ -81,14 +81,14 @@ var MessageSchema = new Schema2(
       default: null,
       index: true
     },
-    createdAt: {
-      type: Date,
-      default: Date.now
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now
-    },
+    // createdAt: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
+    // updatedAt: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
     likedBy: {
       type: [Schema2.Types.ObjectId],
       ref: "User",
@@ -98,8 +98,9 @@ var MessageSchema = new Schema2(
       type: MessageMetadataSchema,
       default: {}
     }
-  }
-  // { timestamps: true } //no need as manually handling timestamps 
+  },
+  { timestamps: true }
+  //auto handle timestamps
 );
 MessageSchema.pre("validate", function(next) {
   if (!this.conversationId) {
@@ -202,14 +203,14 @@ var ConversationSchema = new mongoose4.Schema(
       sparse: true
       // Only applicable for direct conversations
     },
-    createdAt: {
-      type: Date,
-      default: Date.now
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now
-    },
+    // createdAt: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
+    // updatedAt: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
     archived: {
       type: Boolean,
       default: false

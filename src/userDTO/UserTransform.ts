@@ -1,5 +1,11 @@
 import { IUserDocument, UserDTO } from "./types";
 import mongoose, { Types } from "mongoose";
+
+/**
+ * Transforms a user document into a DTO format.
+ * @param user - The user document to transform.
+ * @returns The transformed user DTO.
+ */
 export const userTransformToDTO = (user: IUserDocument): UserDTO => {
 
     const transformedUser : UserDTO = {

@@ -1,29 +1,18 @@
 import mongoose, { Document, Types } from 'mongoose';
 
-declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
-    timestamps: true;
-}, {
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
-} & {
+declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
     messageId: any;
     operation: "create" | "update" | "delete";
     modifiedBy: any;
     before?: any;
     after?: any;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
-} & {
     messageId: any;
     operation: "create" | "update" | "delete";
     modifiedBy: any;
     before?: any;
     after?: any;
 }>, {}> & mongoose.FlatRecord<{
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
-} & {
     messageId: any;
     operation: "create" | "update" | "delete";
     modifiedBy: any;
@@ -151,8 +140,6 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
     organizationId: any;
     participants: any[];
     archived: any;
@@ -164,8 +151,6 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
     organizationId: any;
     participants: any[];
     archived: any;
@@ -177,8 +162,6 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
     organizationId: any;
     participants: any[];
     archived: any;
@@ -264,10 +247,25 @@ interface ConversationDetailsDTO {
     admin: PublicUserFields;
 }
 
+/**
+ * Converts a conversation document from the database to a DTO format for the frontend.
+ * @param conversation - The conversation document of type IConversationDocument
+ * @returns ConversationDTO type object ready for frontend consumption
+ */
 declare const conversationTransformToDTO: (conversation: IConversationDocument) => ConversationDTO;
 
+/**
+ * Transforms an organization document into a DTO format.
+ * @param organization - The organization document to transform.
+ * @returns The transformed organization DTO.
+ */
 declare const transformToOrganizationDTO: (organization: IOrganizationDocument) => OrganizationDTO;
 
+/**
+ * Transforms a user document into a DTO format.
+ * @param user - The user document to transform.
+ * @returns The transformed user DTO.
+ */
 declare const userTransformToDTO: (user: IUserDocument) => UserDTO;
 
 declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {

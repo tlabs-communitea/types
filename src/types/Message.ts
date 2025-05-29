@@ -53,14 +53,14 @@ const MessageSchema = new Schema<IMessageDocument>(
       default: null,
       index: true,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
+    // createdAt: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
+    // updatedAt: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
     likedBy: {
       type: [Schema.Types.ObjectId],
       ref: 'User',
@@ -71,7 +71,7 @@ const MessageSchema = new Schema<IMessageDocument>(
       default: {},
     },
   },
-  // { timestamps: true } //no need as manually handling timestamps 
+  { timestamps: true } //auto handle timestamps
 );
 
 // Custom validation to ensure either conversationId or channelId is provided

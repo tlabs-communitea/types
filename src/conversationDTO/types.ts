@@ -19,7 +19,8 @@ export interface IConversation {
   uniqueKey?: string; // For direct conversations only
   createdAt: Date;
   updatedAt: Date;
-  archived: boolean; //defaults to false
+  adminFlagged?: boolean;
+  adminHidden?: boolean;
 }
 
 export interface IConversationDocument extends Document, IConversation {}
@@ -40,7 +41,8 @@ export interface ConversationDTO {
   uniqueKey: string | null; // For direct conversations only
   createdAt: string;
   updatedAt: string;
-  archived: boolean; //defaults to false
+  adminFlagged: boolean;
+  adminHidden: boolean;
 }
 
 export interface ConversationDetailsDTO {

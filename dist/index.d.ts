@@ -122,6 +122,15 @@ interface UserDTO {
     createdAt: string;
     updatedAt: string;
 }
+interface PublicUserDTO {
+    id: string;
+    name: string;
+    email: string;
+    avatar: string | null;
+    description: string | null;
+    organizationId: string;
+    role: Role;
+}
 
 declare const userSchema: mongoose.Schema<IUserDocument, mongoose.Model<IUserDocument, any, any, any, mongoose.Document<unknown, any, IUserDocument, any> & IUserDocument & Required<{
     _id: unknown;
@@ -267,6 +276,12 @@ declare const transformToOrganizationDTO: (organization: IOrganizationDocument) 
  * @returns The transformed user DTO.
  */
 declare const userTransformToDTO: (user: IUserDocument) => UserDTO;
+/**
+ * Transforms a user document into a public DTO format, exposing only necessary fields.
+ * @param user - The user document to transform.
+ * @returns The transformed public user DTO.
+ */
+declare const userTransformToPublicDTO: (user: IUserDocument) => PublicUserDTO;
 
 declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
@@ -300,4 +315,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserFields, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserDTO, type PublicUserFields, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

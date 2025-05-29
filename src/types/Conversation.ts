@@ -32,7 +32,7 @@ const ConversationSchema = new mongoose.Schema(
       },
     },
     description: {
-      type: String, // Optional for 'channel' type
+      type: String,
     },
     uniqueKey: {
       type: String,

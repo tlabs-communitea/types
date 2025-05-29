@@ -42,7 +42,8 @@ __export(index_exports, {
   transformToMessageDTO: () => transformToMessageDTO,
   transformToOrganizationDTO: () => transformToOrganizationDTO,
   userSchema: () => User_default,
-  userTransformToDTO: () => userTransformToDTO
+  userTransformToDTO: () => userTransformToDTO,
+  userTransformToPublicDTO: () => userTransformToPublicDTO
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -243,7 +244,6 @@ var ConversationSchema = new import_mongoose4.default.Schema(
     },
     description: {
       type: String
-      // Optional for 'channel' type
     },
     uniqueKey: {
       type: String,
@@ -367,6 +367,21 @@ var userTransformToDTO = (user) => {
   };
   return transformedUser;
 };
+var userTransformToPublicDTO = (user) => {
+  return {
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    // Included for general identification
+    avatar: user.avatar || null,
+    description: user.description || null,
+    organizationId: user.organizationId.toString(),
+    role: user.role
+    // Optionally include createdAt and updatedAt if useful for display
+    // createdAt: user.createdAt.toISOString(),
+    // updatedAt: user.updatedAt.toISOString(),
+  };
+};
 
 // src/types/DirectMessage.ts
 var import_mongoose6 = __toESM(require("mongoose"));
@@ -421,5 +436,6 @@ var DirectMessage_default = DirectMessageSchema;
   transformToMessageDTO,
   transformToOrganizationDTO,
   userSchema,
-  userTransformToDTO
+  userTransformToDTO,
+  userTransformToPublicDTO
 });

@@ -21,7 +21,7 @@ export interface IUser {
   organizationAddress?: string;
   createdAt: Date;
   updatedAt: Date;
-} 
+}
 
 // This interface includes Mongoose Document properties like _id, and methods.
 export interface IUserDocument extends IUser, Document {
@@ -37,17 +37,27 @@ export type PublicUserFields = Pick<IUser, 'name' | 'email' | 'avatar' | 'descri
 
 
 export interface UserDTO {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    resetPasswordToken: string | null;
-    resetPasswordTokenExpires: string | null;
-    avatar: string | null;
-    description: string | null;
-    organizationId: string;
-    role: Role;
-    organizationAddress: string | null;
-    createdAt: string;
-    updatedAt: string;
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  resetPasswordToken: string | null;
+  resetPasswordTokenExpires: string | null;
+  avatar: string | null;
+  description: string | null;
+  organizationId: string;
+  role: Role;
+  organizationAddress: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PublicUserDTO {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string | null;
+  description: string | null;
+  organizationId: string;
+  role: Role;
 }

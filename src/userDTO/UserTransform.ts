@@ -1,12 +1,18 @@
-import { IUserDocument, UserDTO } from "./types";
+import { IUserDocument, UserDTO, PublicUserDTO } from "./types";
 import mongoose, { Types } from "mongoose";
+
+/**
+ * Transforms a user document into a DTO format.
+ * @param user - The user document to transform.
+ * @returns The transformed user DTO.
+ */
 export const userTransformToDTO = (user: IUserDocument): UserDTO => {
 
-    const transformedUser : UserDTO = {
+    const transformedUser: UserDTO = {
         id: (user._id as Types.ObjectId).toString(),
         name: user.name,
         email: user.email,
-        password: user.password, 
+        password: user.password,
         resetPasswordToken: user.resetPasswordToken || null,
         resetPasswordTokenExpires: user.resetPasswordTokenExpires
             ? user.resetPasswordTokenExpires.toISOString()
@@ -21,3 +27,23 @@ export const userTransformToDTO = (user: IUserDocument): UserDTO => {
     }
     return transformedUser;
 }
+
+/**
+ * Transforms a user document into a public DTO format, exposing only necessary fields.
+ * @param user - The user document to transform.
+ * @returns The transformed public user DTO.
+ */
+export const userTransformToPublicDTO = (user: IUserDocument): PublicUserDTO => {
+    return {
+        id: (user._id as Types.ObjectId).toString(),
+        name: user.name,
+        email: user.email, // Included for general identification
+        avatar: user.avatar || null,
+        description: user.description || null,
+        organizationId: user.organizationId.toString(),
+        role: user.role,
+        // Optionally include createdAt and updatedAt if useful for display
+        // createdAt: user.createdAt.toISOString(),
+        // updatedAt: user.updatedAt.toISOString(),
+    };
+};

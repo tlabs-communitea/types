@@ -16,8 +16,8 @@ export const transformToMessageDTO = (message: IMessageDocument): MessageDTO => 
   
   let flattened_replies: MessageDTO[] = [];
   //only single depth recursive call as Message model is defined to populate onyl 1 depth of replies
-  if (message.replies && Array.isArray(message.replies)) {
-    flattened_replies = message.replies.map((reply) => transformToMessageDTO(reply));
+  if (message.replies && Array.isArray(message.replies) ) {
+    flattened_replies = message.replies.map((reply) => transformToMessageDTO(reply as IMessageDocument));
   }
 
   let flattened_msg: MessageDTO = {

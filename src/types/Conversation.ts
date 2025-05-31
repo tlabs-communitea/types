@@ -32,7 +32,7 @@ const ConversationSchema = new mongoose.Schema(
       },
     },
     description: {
-      type: String, // Optional for 'channel' type
+      type: String,
     },
     uniqueKey: {
       type: String,
@@ -47,14 +47,14 @@ const ConversationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
+    // createdAt: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
+    // updatedAt: {
+    //   type: Date,
+    //   default: Date.now,
+    // },
   },
   { timestamps: true }
 );

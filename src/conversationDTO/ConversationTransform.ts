@@ -28,11 +28,11 @@ export const conversationTransformToDTO = (
     name: conversation?.name || null,
     organizationId: conversation.organizationId.toString(),
     uniqueKey: conversation?.uniqueKey || null,
-    archived: conversation.archived || false,
     createdAt: conversation.createdAt.toISOString(),
     updatedAt: conversation.updatedAt.toISOString(),
-    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : []
-
+    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : [],
+    adminFlagged: conversation.adminFlagged || false,
+    adminHidden: conversation.adminHidden || false,
   };
   return transformedConversation;
 };

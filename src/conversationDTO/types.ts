@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
-import { PublicUserFields } from '../userDTO/types';
+import { PublicUserDTO } from '../userDTO/types';
 
 export const TYPE_OF_CHANNEL = {
   channel: 'channel',
@@ -19,7 +19,8 @@ export interface IConversation {
   uniqueKey?: string; // For direct conversations only
   createdAt: Date;
   updatedAt: Date;
-  archived: boolean; //defaults to false
+  adminFlagged?: boolean;
+  adminHidden?: boolean;
 }
 
 export interface IConversationDocument extends Document, IConversation {}
@@ -40,13 +41,14 @@ export interface ConversationDTO {
   uniqueKey: string | null; // For direct conversations only
   createdAt: string;
   updatedAt: string;
-  archived: boolean; //defaults to false
+  adminFlagged: boolean;
+  adminHidden: boolean;
 }
 
 export interface ConversationDetailsDTO {
   id: string;
   name: string | null;
   description: string | null;
-  members: PublicUserFields[];
-  admin: PublicUserFields;
+  members: PublicUserDTO[];
+  admin: PublicUserDTO;
 }

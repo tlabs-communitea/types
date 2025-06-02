@@ -150,8 +150,6 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     type: string;
     organizationId: any;
     participants: any[];
-    adminFlagged: any;
-    adminHidden: any;
     name?: string | null | undefined;
     metadata?: any;
     description?: string | null | undefined;
@@ -163,8 +161,6 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     type: string;
     organizationId: any;
     participants: any[];
-    adminFlagged: any;
-    adminHidden: any;
     name?: string | null | undefined;
     metadata?: any;
     description?: string | null | undefined;
@@ -176,8 +172,6 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     type: string;
     organizationId: any;
     participants: any[];
-    adminFlagged: any;
-    adminHidden: any;
     name?: string | null | undefined;
     metadata?: any;
     description?: string | null | undefined;
@@ -236,7 +230,7 @@ interface IConversation {
     createdAt: Date;
     updatedAt: Date;
     metadata: {
-        adminFlagged?: boolean;
+        adminFlaggedBy: mongoose.Types.ObjectId[];
         adminHidden?: boolean;
     };
 }
@@ -255,7 +249,7 @@ interface ConversationDTO {
     createdAt: string;
     updatedAt: string;
     metadata: {
-        adminFlagged?: boolean;
+        adminFlaggedBy?: string[];
         adminHidden?: boolean;
     };
 }

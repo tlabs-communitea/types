@@ -202,19 +202,15 @@ var ConversationSchema = new mongoose4.Schema(
       sparse: true
       // Only applicable for direct conversations
     },
-    adminFlagged: {
-      type: Boolean,
-      default: false
-    },
-    adminHidden: {
-      type: Boolean,
-      default: false
-    },
     metadata: {
-      adminFlagged: {
-        type: Boolean,
-        default: false
-      },
+      adminFlaggedBy: [
+        {
+          type: mongoose4.Schema.Types.ObjectId,
+          ref: "User",
+          default: []
+          // Default to an empty array
+        }
+      ],
       adminHidden: {
         type: Boolean,
         default: false
@@ -281,6 +277,9 @@ var transformToMessageDTO = (message) => {
 };
 
 // src/conversationDTO/ConversationTransform.ts
+function mapObjectIdsToStrings2(ids) {
+  return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
+}
 var conversationTransformToDTO = (conversation) => {
   const transformedConversation = {
     id: conversation._id.toString(),
@@ -293,7 +292,7 @@ var conversationTransformToDTO = (conversation) => {
     updatedAt: conversation.updatedAt.toISOString(),
     participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : [],
     metadata: {
-      adminFlagged: conversation.metadata.adminFlagged || false,
+      adminFlaggedBy: mapObjectIdsToStrings2(conversation.metadata?.adminFlaggedBy || null),
       adminHidden: conversation.metadata.adminHidden || false
     }
   };

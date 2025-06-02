@@ -40,10 +40,13 @@ const ConversationSchema = new mongoose.Schema(
       sparse: true, // Only applicable for direct conversations
     },
     metadata: {
-      adminFlagged: {
-        type: Boolean,
-        default: false,
-      },
+      adminFlaggedBy: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+          default: [], // Default to an empty array
+        }
+      ],
       adminHidden: {
         type: Boolean,
         default: false,

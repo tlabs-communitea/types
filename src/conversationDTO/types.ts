@@ -20,7 +20,7 @@ export interface IConversation {
   createdAt: Date;
   updatedAt: Date;
   metadata: {
-    adminFlagged?: boolean;
+    adminFlaggedBy: mongoose.Types.ObjectId[]; // Array of user IDs who flagged the conversation
     adminHidden?: boolean;
   };
 }
@@ -37,14 +37,14 @@ export interface ConversationDTO {
   id: string;
   type: TYPE_OF_CHANNEL;
   name: string | null; // Required for channels
-  description: string | null; // Optional for channels
-  participants: string[]; // Optional for channels
+  description: string | null;
+  participants: string[]; // // Array of user IDs. Optional for channels
   organizationId: string;
   uniqueKey: string | null; // For direct conversations only
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
   metadata: {
-    adminFlagged?: boolean;
+    adminFlaggedBy?: string[]; // Array of user IDs who flagged the conversation
     adminHidden?: boolean;
   };
 }

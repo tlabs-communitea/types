@@ -32,7 +32,7 @@ export const conversationTransformToDTO = (
     updatedAt: conversation.updatedAt.toISOString(),
     participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : [],
     metadata: {
-      adminFlagged: conversation.metadata.adminFlagged || false,
+      adminFlaggedBy: mapObjectIdsToStrings(conversation.metadata?.adminFlaggedBy || null),
       adminHidden: conversation.metadata.adminHidden || false,
     },
   };

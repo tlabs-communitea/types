@@ -106,7 +106,6 @@ interface IUserDocument extends IUser, Document {
 }
 type MongooseSpecificTypes$2 = keyof Document;
 type CreateUser = Omit<IUserDocument, MongooseSpecificTypes$2>;
-type PublicUserFields = Pick<IUser, 'name' | 'email' | 'avatar' | 'description'>;
 interface UserDTO {
     id: string;
     name: string;
@@ -151,8 +150,10 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     type: string;
     organizationId: any;
     participants: any[];
-    archived: any;
+    adminFlagged: any;
+    adminHidden: any;
     name?: string | null | undefined;
+    metadata?: any;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
@@ -162,8 +163,10 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     type: string;
     organizationId: any;
     participants: any[];
-    archived: any;
+    adminFlagged: any;
+    adminHidden: any;
     name?: string | null | undefined;
+    metadata?: any;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
 }>, {}> & mongoose.FlatRecord<{
@@ -173,8 +176,10 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     type: string;
     organizationId: any;
     participants: any[];
-    archived: any;
+    adminFlagged: any;
+    adminHidden: any;
     name?: string | null | undefined;
+    metadata?: any;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
 }> & {
@@ -230,7 +235,10 @@ interface IConversation {
     uniqueKey?: string;
     createdAt: Date;
     updatedAt: Date;
-    archived: boolean;
+    metadata: {
+        adminFlagged?: boolean;
+        adminHidden?: boolean;
+    };
 }
 interface IConversationDocument extends Document, IConversation {
 }
@@ -246,14 +254,17 @@ interface ConversationDTO {
     uniqueKey: string | null;
     createdAt: string;
     updatedAt: string;
-    archived: boolean;
+    metadata: {
+        adminFlagged?: boolean;
+        adminHidden?: boolean;
+    };
 }
 interface ConversationDetailsDTO {
     id: string;
     name: string | null;
     description: string | null;
-    members: PublicUserFields[];
-    admin: PublicUserFields;
+    members: PublicUserDTO[];
+    admin: PublicUserDTO;
 }
 
 /**
@@ -315,4 +326,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserDTO, type PublicUserFields, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserDTO, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

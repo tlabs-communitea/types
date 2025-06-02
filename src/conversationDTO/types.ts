@@ -19,11 +19,13 @@ export interface IConversation {
   uniqueKey?: string; // For direct conversations only
   createdAt: Date;
   updatedAt: Date;
-  adminFlagged?: boolean;
-  adminHidden?: boolean;
+  metadata: {
+    adminFlagged?: boolean;
+    adminHidden?: boolean;
+  };
 }
 
-export interface IConversationDocument extends Document, IConversation {}
+export interface IConversationDocument extends Document, IConversation { }
 
 type MongooseSpecificTypes = keyof Document;
 export type CreateConversation = Omit<
@@ -41,8 +43,10 @@ export interface ConversationDTO {
   uniqueKey: string | null; // For direct conversations only
   createdAt: string;
   updatedAt: string;
-  adminFlagged: boolean;
-  adminHidden: boolean;
+  metadata: {
+    adminFlagged?: boolean;
+    adminHidden?: boolean;
+  };
 }
 
 export interface ConversationDetailsDTO {

@@ -47,14 +47,17 @@ const ConversationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    // createdAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    // updatedAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
+    metadata: {
+      adminFlagged: {
+        type: Boolean,
+        default: false,
+      },
+      adminHidden: {
+        type: Boolean,
+        default: false,
+      },
+      default: {}, // Ensure metadata always exists
+    },
   },
   { timestamps: true }
 );

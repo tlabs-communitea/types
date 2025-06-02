@@ -251,17 +251,25 @@ var ConversationSchema = new import_mongoose4.default.Schema(
       sparse: true
       // Only applicable for direct conversations
     },
-    // createdAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    // updatedAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    archived: {
+    adminFlagged: {
       type: Boolean,
       default: false
+    },
+    adminHidden: {
+      type: Boolean,
+      default: false
+    },
+    metadata: {
+      adminFlagged: {
+        type: Boolean,
+        default: false
+      },
+      adminHidden: {
+        type: Boolean,
+        default: false
+      },
+      default: {}
+      // Ensure metadata always exists
     }
   },
   { timestamps: true }
@@ -330,10 +338,13 @@ var conversationTransformToDTO = (conversation) => {
     name: conversation?.name || null,
     organizationId: conversation.organizationId.toString(),
     uniqueKey: conversation?.uniqueKey || null,
-    archived: conversation.archived || false,
     createdAt: conversation.createdAt.toISOString(),
     updatedAt: conversation.updatedAt.toISOString(),
-    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : []
+    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : [],
+    metadata: {
+      adminFlagged: conversation.metadata.adminFlagged || false,
+      adminHidden: conversation.metadata.adminHidden || false
+    }
   };
   return transformedConversation;
 };

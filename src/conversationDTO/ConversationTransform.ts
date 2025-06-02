@@ -31,8 +31,10 @@ export const conversationTransformToDTO = (
     createdAt: conversation.createdAt.toISOString(),
     updatedAt: conversation.updatedAt.toISOString(),
     participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : [],
-    adminFlagged: conversation.adminFlagged || false,
-    adminHidden: conversation.adminHidden || false,
+    metadata: {
+      adminFlagged: conversation.metadata.adminFlagged || false,
+      adminHidden: conversation.metadata.adminHidden || false,
+    },
   };
   return transformedConversation;
 };

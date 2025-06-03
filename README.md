@@ -190,3 +190,20 @@ Using .lean() will cause replies to be IMessage whereas it's defined to be IMess
 When creating Messages, use CreateMessage type
 Use IMessageDocument as a type when fetching message documents from db
 (use select to specify types but don't use .lean())
+
+When fetching Messages, only use the **.populate()** field for replies.
+Instead of doing this:
+```
+    const updatedMessage = await Message.findById(messageId)
+      .populate('name avatar')
+      .populate({
+        path: 'replies',
+        populate: { path: 'userId', select: 'name avatar' },
+      })
+```
+
+we want to only populate replies(if needed) and let the transformToMessageDTO take care of the conversion:
+Below is acceptable
+```
+const message = await Message.findById(messageId).populate('replies'); 
+```

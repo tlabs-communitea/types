@@ -261,9 +261,9 @@ var transformToMessageDTO = (message) => {
         message.metadata.adminFlaggedBy
       )
     } : null,
+    // Use metadataDTO eventually
     conversationId: message.conversationId ? message.conversationId.toString() : null,
-    // channelId: message.channelId ? message.channelId.toString() : null, depricated
-    userId: message.userId.id ? message.userId.id.toString() : null,
+    userId: message.userId ? message.userId.toString() : null,
     content: message.content || "",
     fileUrl: message.fileUrl ? message.fileUrl.toString() : null,
     fileName: message.fileName ? message.fileName.toString() : null,

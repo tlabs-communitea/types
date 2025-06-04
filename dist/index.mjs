@@ -32,21 +32,18 @@ var MessageHistory_default = MessageHistorySchema;
 import { Schema as Schema2 } from "mongoose";
 var MessageMetadataSchema = new Schema2(
   {
-    userFlaggedBy: [
-      {
-        type: Schema2.Types.ObjectId,
-        ref: "User"
-      }
-    ],
-    adminFlaggedBy: [
-      {
-        type: Schema2.Types.ObjectId,
-        ref: "User"
-      }
-    ]
+    userFlaggedBy: {
+      type: [Schema2.Types.ObjectId],
+      ref: "User",
+      default: []
+    },
+    adminFlaggedBy: {
+      type: [Schema2.Types.ObjectId],
+      ref: "User",
+      default: []
+    }
   },
   { _id: false }
-  // Prevents nested _id creation inside metadata
 );
 var MessageSchema = new Schema2(
   {
@@ -163,6 +160,21 @@ var TYPE_OF_CHANNEL = {
 };
 
 // src/types/Conversation.ts
+var ConversationMetadataSchema = new mongoose4.Schema(
+  {
+    adminFlaggedBy: {
+      type: [mongoose4.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    },
+    adminHidden: {
+      type: Boolean,
+      default: false
+    }
+  },
+  { _id: false }
+  // prevents creation of a separate _id for metadata subdocument
+);
 var ConversationSchema = new mongoose4.Schema(
   {
     type: {
@@ -202,17 +214,10 @@ var ConversationSchema = new mongoose4.Schema(
       sparse: true
       // Only applicable for direct conversations
     },
-    // createdAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    // updatedAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    archived: {
-      type: Boolean,
-      default: false
+    metadata: {
+      type: ConversationMetadataSchema,
+      default: {}
+      // Ensure metadata always exists
     }
   },
   { timestamps: true }
@@ -257,8 +262,8 @@ var transformToMessageDTO = (message) => {
         message.metadata.adminFlaggedBy
       )
     } : null,
+    // Use metadataDTO eventually
     conversationId: message.conversationId ? message.conversationId.toString() : null,
-    // channelId: message.channelId ? message.channelId.toString() : null, depricated
     userId: message.userId ? message.userId.toString() : null,
     content: message.content || "",
     fileUrl: message.fileUrl ? message.fileUrl.toString() : null,
@@ -273,6 +278,9 @@ var transformToMessageDTO = (message) => {
 };
 
 // src/conversationDTO/ConversationTransform.ts
+function mapObjectIdsToStrings2(ids) {
+  return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
+}
 var conversationTransformToDTO = (conversation) => {
   const transformedConversation = {
     id: conversation._id.toString(),
@@ -281,10 +289,13 @@ var conversationTransformToDTO = (conversation) => {
     name: conversation?.name || null,
     organizationId: conversation.organizationId.toString(),
     uniqueKey: conversation?.uniqueKey || null,
-    archived: conversation.archived || false,
     createdAt: conversation.createdAt.toISOString(),
     updatedAt: conversation.updatedAt.toISOString(),
-    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : []
+    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : [],
+    metadata: {
+      adminFlaggedBy: mapObjectIdsToStrings2(conversation.metadata?.adminFlaggedBy || null),
+      adminHidden: conversation.metadata?.adminHidden || false
+    }
   };
   return transformedConversation;
 };
@@ -374,6 +385,7 @@ DirectMessageSchema.set("toJSON", {
 });
 var DirectMessage_default = DirectMessageSchema;
 export {
+  ConversationMetadataSchema,
   DirectMessage_default as DirectMessageSchema,
   MessageHistory_default as MessageHistorySchema,
   MessageMetadataSchema,

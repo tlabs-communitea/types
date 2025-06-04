@@ -3,6 +3,16 @@
 This repository contains the TypeScript type definitions, Mongoose schemas, and Data Transfer Object (DTO) transformation logic for the Toucan Labs application. It serves as a centralized place for defining the data structures used across the backend services.
 **This is the dependency repository for shared types between our codebase and microservices**
 
+## Default types
+
+DTO related types cannot have optional fields in them.
+
+Optional fields in I__/ I__Document types must have a default type when converting/transforming to a DTO type
+
+* **For optional array types**: Empty array in DTO
+* **For optional boolean types**: False boolean value
+* **For any other optional type** Null value
+
 ## Making changes
 
 We'll be maintaing a proper release post the launch of v1 for tlabs-communitea, for now, primary objective is to modularize typespace logic between shared microservices like our core backend and chat microservice
@@ -182,7 +192,7 @@ async function getUserDTO(userId: string) {
 }
 ```
 
-## Note:
+## Note
 
 While fetching Messages, **do not use .lean()**
 Message fetching has a prehook that populates replies whenever a fetch query is made as IMessageDocument,
@@ -190,3 +200,22 @@ Using .lean() will cause replies to be IMessage whereas it's defined to be IMess
 When creating Messages, use CreateMessage type
 Use IMessageDocument as a type when fetching message documents from db
 (use select to specify types but don't use .lean())
+
+When fetching Messages, only use the **.populate()** field for replies.
+Instead of doing this:
+
+```
+    const updatedMessage = await Message.findById(messageId)
+      .populate('name avatar')
+      .populate({
+        path: 'replies',
+        populate: { path: 'userId', select: 'name avatar' },
+      })
+```
+
+we want to only populate replies(if needed) and let the transformToMessageDTO take care of the conversion:
+Below is acceptable
+
+```
+const message = await Message.findById(messageId).populate('replies'); 
+```

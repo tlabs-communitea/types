@@ -141,6 +141,23 @@ declare const userSchema: mongoose.Schema<IUserDocument, mongoose.Model<IUserDoc
     __v: number;
 }>;
 
+interface ConversationMetadata {
+    adminFlaggedBy: mongoose.Types.ObjectId[];
+    adminHidden: boolean;
+}
+interface ConversationMetadataDTO {
+    adminFlaggedBy: string[];
+    adminHidden: boolean;
+}
+declare const ConversationMetadataSchema: mongoose.Schema<ConversationMetadata, mongoose.Model<ConversationMetadata, any, any, any, mongoose.Document<unknown, any, ConversationMetadata, any> & ConversationMetadata & {
+    _id: mongoose.Types.ObjectId;
+} & {
+    __v: number;
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, ConversationMetadata, mongoose.Document<unknown, {}, mongoose.FlatRecord<ConversationMetadata>, {}> & mongoose.FlatRecord<ConversationMetadata> & {
+    _id: mongoose.Types.ObjectId;
+} & {
+    __v: number;
+}>;
 declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
 }, {
@@ -148,10 +165,10 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
+    metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
     name?: string | null | undefined;
-    metadata?: any;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
@@ -159,10 +176,10 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
+    metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
     name?: string | null | undefined;
-    metadata?: any;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
 }>, {}> & mongoose.FlatRecord<{
@@ -170,10 +187,10 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
+    metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
     name?: string | null | undefined;
-    metadata?: any;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
 }> & {
@@ -320,4 +337,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserDTO, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserDTO, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

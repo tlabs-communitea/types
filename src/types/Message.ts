@@ -4,22 +4,18 @@ import { IMessageDocument, MessageMetadata } from '../messagesDTO/types';
 
 export const MessageMetadataSchema = new Schema<MessageMetadata>(
   {
-    userFlaggedBy: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        default: [], // Default to an empty array
-      },
-    ],
-    adminFlaggedBy: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        default: [], // Default to an empty array
-      },
-    ],
+    userFlaggedBy: {
+      type: [Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
+    },
+    adminFlaggedBy: {
+      type: [Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
+    },
   },
-  { _id: false } // Prevents nested _id creation inside metadata
+  { _id: false }
 );
 
 const MessageSchema = new Schema<IMessageDocument>(

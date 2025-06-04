@@ -30,6 +30,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
+  ConversationMetadataSchema: () => ConversationMetadataSchema,
   DirectMessageSchema: () => DirectMessage_default,
   MessageHistorySchema: () => MessageHistory_default,
   MessageMetadataSchema: () => MessageMetadataSchema,
@@ -81,25 +82,18 @@ var MessageHistory_default = MessageHistorySchema;
 var import_mongoose2 = require("mongoose");
 var MessageMetadataSchema = new import_mongoose2.Schema(
   {
-    userFlaggedBy: [
-      {
-        type: import_mongoose2.Schema.Types.ObjectId,
-        ref: "User",
-        default: []
-        // Default to an empty array
-      }
-    ],
-    adminFlaggedBy: [
-      {
-        type: import_mongoose2.Schema.Types.ObjectId,
-        ref: "User",
-        default: []
-        // Default to an empty array
-      }
-    ]
+    userFlaggedBy: {
+      type: [import_mongoose2.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    },
+    adminFlaggedBy: {
+      type: [import_mongoose2.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    }
   },
   { _id: false }
-  // Prevents nested _id creation inside metadata
 );
 var MessageSchema = new import_mongoose2.Schema(
   {
@@ -216,6 +210,21 @@ var TYPE_OF_CHANNEL = {
 };
 
 // src/types/Conversation.ts
+var ConversationMetadataSchema = new import_mongoose4.default.Schema(
+  {
+    adminFlaggedBy: {
+      type: [import_mongoose4.default.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    },
+    adminHidden: {
+      type: Boolean,
+      default: false
+    }
+  },
+  { _id: false }
+  // prevents creation of a separate _id for metadata subdocument
+);
 var ConversationSchema = new import_mongoose4.default.Schema(
   {
     type: {
@@ -256,18 +265,7 @@ var ConversationSchema = new import_mongoose4.default.Schema(
       // Only applicable for direct conversations
     },
     metadata: {
-      adminFlaggedBy: [
-        {
-          type: import_mongoose4.default.Schema.Types.ObjectId,
-          ref: "User",
-          default: []
-          // Default to an empty array
-        }
-      ],
-      adminHidden: {
-        type: Boolean,
-        default: false
-      },
+      type: ConversationMetadataSchema,
       default: {}
       // Ensure metadata always exists
     }
@@ -438,6 +436,7 @@ DirectMessageSchema.set("toJSON", {
 var DirectMessage_default = DirectMessageSchema;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  ConversationMetadataSchema,
   DirectMessageSchema,
   MessageHistorySchema,
   MessageMetadataSchema,

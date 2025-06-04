@@ -19,6 +19,7 @@ export interface IUser {
   organizationId: Types.ObjectId;
   role: Role;
   organizationAddress?: string;
+  isLocked: boolean; // indicates if the user account is locked by the admin
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,6 +47,7 @@ export interface UserDTO {
   organizationId: string;
   role: Role;
   organizationAddress: string | null;
+  isLocked: boolean;
   createdAt: string;
   updatedAt: string;
 }

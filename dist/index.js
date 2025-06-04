@@ -194,7 +194,9 @@ var userSchema = new import_mongoose3.default.Schema(
       required: true
     },
     role: { type: String, enum: ROLES, default: ROLES.MEMBER },
-    organizationAddress: { type: String }
+    organizationAddress: { type: String },
+    isLocked: { type: Boolean, default: false }
+    // indicates if the user account is locked by the admin
   },
   { timestamps: true }
 );
@@ -374,6 +376,7 @@ var userTransformToDTO = (user) => {
     organizationId: user.organizationId.toString(),
     role: user.role,
     organizationAddress: user.organizationAddress || null,
+    isLocked: user.isLocked,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString()
   };

@@ -22,6 +22,7 @@ export const userTransformToDTO = (user: IUserDocument): UserDTO => {
         organizationId: user.organizationId.toString(),
         role: user.role,
         organizationAddress: user.organizationAddress || null,
+        isLocked: user.isLocked,
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
     }

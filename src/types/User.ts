@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema<IUserDocument>(
     },
     role: { type: String, enum: ROLES, default: ROLES.MEMBER },
     organizationAddress: { type: String },
+    isLocked: { type: Boolean, default: false }, // indicates if the user account is locked by the admin
   },
   { timestamps: true }
 );

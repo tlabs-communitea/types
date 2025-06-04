@@ -22,8 +22,8 @@ type MongooseSpecificTypes = keyof Document;
 export type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes>;
 
 export interface MessageMetadata {
-  userFlaggedBy: Types.ObjectId[];
-  adminFlaggedBy: Types.ObjectId[];
+  userFlaggedBy?: Types.ObjectId[];
+  adminFlaggedBy?: Types.ObjectId[];
 }
 
 // -----------------

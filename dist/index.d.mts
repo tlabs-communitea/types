@@ -42,8 +42,8 @@ interface IMessageDocument extends Document, IMessage {
 type MongooseSpecificTypes$3 = keyof Document;
 type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes$3>;
 interface MessageMetadata {
-    userFlaggedBy: Types.ObjectId[];
-    adminFlaggedBy: Types.ObjectId[];
+    userFlaggedBy?: Types.ObjectId[];
+    adminFlaggedBy?: Types.ObjectId[];
 }
 interface MessageMetadataDTO {
     userFlaggedBy: string[];
@@ -230,7 +230,7 @@ interface IConversation {
     createdAt: Date;
     updatedAt: Date;
     metadata: {
-        adminFlaggedBy: mongoose.Types.ObjectId[];
+        adminFlaggedBy?: mongoose.Types.ObjectId[];
         adminHidden?: boolean;
     };
 }
@@ -249,8 +249,8 @@ interface ConversationDTO {
     createdAt: string;
     updatedAt: string;
     metadata: {
-        adminFlaggedBy: string[];
-        adminHidden: boolean;
+        adminFlaggedBy?: string[];
+        adminHidden?: boolean;
     };
 }
 interface ConversationDetailsDTO {

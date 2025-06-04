@@ -35,13 +35,17 @@ var MessageMetadataSchema = new Schema2(
     userFlaggedBy: [
       {
         type: Schema2.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        default: []
+        // Default to an empty array
       }
     ],
     adminFlaggedBy: [
       {
         type: Schema2.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        default: []
+        // Default to an empty array
       }
     ]
   },

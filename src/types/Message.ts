@@ -8,12 +8,14 @@ export const MessageMetadataSchema = new Schema<MessageMetadata>(
       {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        default: [], // Default to an empty array
       },
     ],
     adminFlaggedBy: [
       {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        default: [], // Default to an empty array
       },
     ],
   },

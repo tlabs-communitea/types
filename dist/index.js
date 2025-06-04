@@ -84,13 +84,17 @@ var MessageMetadataSchema = new import_mongoose2.Schema(
     userFlaggedBy: [
       {
         type: import_mongoose2.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        default: []
+        // Default to an empty array
       }
     ],
     adminFlaggedBy: [
       {
         type: import_mongoose2.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        default: []
+        // Default to an empty array
       }
     ]
   },

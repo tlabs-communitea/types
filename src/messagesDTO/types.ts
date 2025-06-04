@@ -13,7 +13,7 @@ export interface IMessage {
   parentMessageId?: Types.ObjectId;
   replies?: IMessageDocument[]; // Virtual field for replies, populated only after a find query, doesn't exist separately in the db 
   //NOTE: Don't use .lean() with replies populating, fetch replies fully as IMessageDocument[], else typeError will occur when using transformToMessageDTO function, as it expects IMessageDocument type for replies
-  metadata?: MessageMetadata; // Optional metadata field
+  metadata: MessageMetadata;
 }
 
 export interface IMessageDocument extends Document, IMessage {}

@@ -35,7 +35,7 @@ interface IMessage {
     likedBy: Types.ObjectId[];
     parentMessageId?: Types.ObjectId;
     replies?: IMessageDocument[];
-    metadata?: MessageMetadata;
+    metadata: MessageMetadata;
 }
 interface IMessageDocument extends Document, IMessage {
 }
@@ -249,8 +249,8 @@ interface ConversationDTO {
     createdAt: string;
     updatedAt: string;
     metadata: {
-        adminFlaggedBy?: string[];
-        adminHidden?: boolean;
+        adminFlaggedBy: string[];
+        adminHidden: boolean;
     };
 }
 interface ConversationDetailsDTO {

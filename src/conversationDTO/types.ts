@@ -44,8 +44,8 @@ export interface ConversationDTO {
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   metadata: {
-    adminFlaggedBy?: string[]; // Array of user IDs who flagged the conversation
-    adminHidden?: boolean;
+    adminFlaggedBy: string[]; // Array of user IDs who flagged the conversation
+    adminHidden: boolean;
   };
 }
 

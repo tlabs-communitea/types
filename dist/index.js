@@ -30,6 +30,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
+  ConversationMetadataSchema: () => ConversationMetadataSchema,
   DirectMessageSchema: () => DirectMessage_default,
   MessageHistorySchema: () => MessageHistory_default,
   MessageMetadataSchema: () => MessageMetadataSchema,
@@ -81,21 +82,18 @@ var MessageHistory_default = MessageHistorySchema;
 var import_mongoose2 = require("mongoose");
 var MessageMetadataSchema = new import_mongoose2.Schema(
   {
-    userFlaggedBy: [
-      {
-        type: import_mongoose2.Schema.Types.ObjectId,
-        ref: "User"
-      }
-    ],
-    adminFlaggedBy: [
-      {
-        type: import_mongoose2.Schema.Types.ObjectId,
-        ref: "User"
-      }
-    ]
+    userFlaggedBy: {
+      type: [import_mongoose2.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    },
+    adminFlaggedBy: {
+      type: [import_mongoose2.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    }
   },
   { _id: false }
-  // Prevents nested _id creation inside metadata
 );
 var MessageSchema = new import_mongoose2.Schema(
   {
@@ -214,6 +212,21 @@ var TYPE_OF_CHANNEL = {
 };
 
 // src/types/Conversation.ts
+var ConversationMetadataSchema = new import_mongoose4.default.Schema(
+  {
+    adminFlaggedBy: {
+      type: [import_mongoose4.default.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    },
+    adminHidden: {
+      type: Boolean,
+      default: false
+    }
+  },
+  { _id: false }
+  // prevents creation of a separate _id for metadata subdocument
+);
 var ConversationSchema = new import_mongoose4.default.Schema(
   {
     type: {
@@ -253,17 +266,10 @@ var ConversationSchema = new import_mongoose4.default.Schema(
       sparse: true
       // Only applicable for direct conversations
     },
-    // createdAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    // updatedAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    archived: {
-      type: Boolean,
-      default: false
+    metadata: {
+      type: ConversationMetadataSchema,
+      default: {}
+      // Ensure metadata always exists
     }
   },
   { timestamps: true }
@@ -308,8 +314,8 @@ var transformToMessageDTO = (message) => {
         message.metadata.adminFlaggedBy
       )
     } : null,
+    // Use metadataDTO eventually
     conversationId: message.conversationId ? message.conversationId.toString() : null,
-    // channelId: message.channelId ? message.channelId.toString() : null, depricated
     userId: message.userId ? message.userId.toString() : null,
     content: message.content || "",
     fileUrl: message.fileUrl ? message.fileUrl.toString() : null,
@@ -324,6 +330,9 @@ var transformToMessageDTO = (message) => {
 };
 
 // src/conversationDTO/ConversationTransform.ts
+function mapObjectIdsToStrings2(ids) {
+  return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
+}
 var conversationTransformToDTO = (conversation) => {
   const transformedConversation = {
     id: conversation._id.toString(),
@@ -332,10 +341,13 @@ var conversationTransformToDTO = (conversation) => {
     name: conversation?.name || null,
     organizationId: conversation.organizationId.toString(),
     uniqueKey: conversation?.uniqueKey || null,
-    archived: conversation.archived || false,
     createdAt: conversation.createdAt.toISOString(),
     updatedAt: conversation.updatedAt.toISOString(),
-    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : []
+    participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : [],
+    metadata: {
+      adminFlaggedBy: mapObjectIdsToStrings2(conversation.metadata?.adminFlaggedBy || null),
+      adminHidden: conversation.metadata?.adminHidden || false
+    }
   };
   return transformedConversation;
 };
@@ -427,6 +439,7 @@ DirectMessageSchema.set("toJSON", {
 var DirectMessage_default = DirectMessageSchema;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  ConversationMetadataSchema,
   DirectMessageSchema,
   MessageHistorySchema,
   MessageMetadataSchema,

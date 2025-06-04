@@ -2,6 +2,23 @@
 import { IConversationDocument } from "../conversationDTO/types";
 import mongoose from "mongoose";
 import { TYPE_OF_CHANNEL } from "../conversationDTO/types";
+import { ConversationMetadata } from "../conversationDTO/types";
+
+export const ConversationMetadataSchema = new mongoose.Schema<ConversationMetadata>(
+  {
+    adminFlaggedBy: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
+    },
+    adminHidden: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { _id: false } // prevents creation of a separate _id for metadata subdocument
+);
+
 const ConversationSchema = new mongoose.Schema(
   {
     type: {
@@ -39,17 +56,9 @@ const ConversationSchema = new mongoose.Schema(
       unique: true,
       sparse: true, // Only applicable for direct conversations
     },
-    // createdAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    // updatedAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    archived: {
-      type: Boolean,
-      default: false,
+    metadata: {
+      type: ConversationMetadataSchema,
+      default: {}, // Ensure metadata always exists
     },
   },
   { timestamps: true }

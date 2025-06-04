@@ -35,15 +35,15 @@ interface IMessage {
     likedBy: Types.ObjectId[];
     parentMessageId?: Types.ObjectId;
     replies?: IMessageDocument[];
-    metadata?: MessageMetadata;
+    metadata: MessageMetadata;
 }
 interface IMessageDocument extends Document, IMessage {
 }
 type MongooseSpecificTypes$3 = keyof Document;
 type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes$3>;
 interface MessageMetadata {
-    userFlaggedBy: Types.ObjectId[];
-    adminFlaggedBy: Types.ObjectId[];
+    userFlaggedBy?: Types.ObjectId[];
+    adminFlaggedBy?: Types.ObjectId[];
 }
 interface MessageMetadataDTO {
     userFlaggedBy: string[];
@@ -107,7 +107,6 @@ interface IUserDocument extends IUser, Document {
 }
 type MongooseSpecificTypes$2 = keyof Document;
 type CreateUser = Omit<IUserDocument, MongooseSpecificTypes$2>;
-type PublicUserFields = Pick<IUser, 'name' | 'email' | 'avatar' | 'description'>;
 interface UserDTO {
     id: string;
     name: string;
@@ -144,6 +143,69 @@ declare const userSchema: mongoose.Schema<IUserDocument, mongoose.Model<IUserDoc
     __v: number;
 }>;
 
+declare const TYPE_OF_CHANNEL: {
+    readonly channel: "channel";
+    readonly direct: "direct";
+};
+type TYPE_OF_CHANNEL = (typeof TYPE_OF_CHANNEL)[keyof typeof TYPE_OF_CHANNEL];
+interface IConversation {
+    type: TYPE_OF_CHANNEL;
+    name?: string;
+    description?: string;
+    participants?: mongoose.Types.ObjectId[];
+    organizationId: mongoose.Types.ObjectId;
+    uniqueKey?: string;
+    createdAt: Date;
+    updatedAt: Date;
+    metadata: {
+        adminFlaggedBy?: mongoose.Types.ObjectId[];
+        adminHidden?: boolean;
+    };
+}
+interface ConversationMetadata {
+    adminFlaggedBy: mongoose.Types.ObjectId[];
+    adminHidden: boolean;
+}
+interface ConversationMetadataDTO {
+    adminFlaggedBy: string[];
+    adminHidden: boolean;
+}
+interface IConversationDocument extends Document, IConversation {
+}
+type MongooseSpecificTypes$1 = keyof Document;
+type CreateConversation = Omit<IConversationDocument, MongooseSpecificTypes$1>;
+interface ConversationDTO {
+    id: string;
+    type: TYPE_OF_CHANNEL;
+    name: string | null;
+    description: string | null;
+    participants: string[];
+    organizationId: string;
+    uniqueKey: string | null;
+    createdAt: string;
+    updatedAt: string;
+    metadata: {
+        adminFlaggedBy: string[];
+        adminHidden: boolean;
+    };
+}
+interface ConversationDetailsDTO {
+    id: string;
+    name: string | null;
+    description: string | null;
+    members: PublicUserDTO[];
+    admin: PublicUserDTO;
+}
+
+declare const ConversationMetadataSchema: mongoose.Schema<ConversationMetadata, mongoose.Model<ConversationMetadata, any, any, any, mongoose.Document<unknown, any, ConversationMetadata, any> & ConversationMetadata & {
+    _id: mongoose.Types.ObjectId;
+} & {
+    __v: number;
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, ConversationMetadata, mongoose.Document<unknown, {}, mongoose.FlatRecord<ConversationMetadata>, {}> & mongoose.FlatRecord<ConversationMetadata> & {
+    _id: mongoose.Types.ObjectId;
+} & {
+    __v: number;
+}>;
 declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
 }, {
@@ -151,9 +213,9 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
+    metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
-    archived: any;
     name?: string | null | undefined;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
@@ -162,9 +224,9 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
+    metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
-    archived: any;
     name?: string | null | undefined;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
@@ -173,9 +235,9 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: string;
+    metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
-    archived: any;
     name?: string | null | undefined;
     description?: string | null | undefined;
     uniqueKey?: string | null | undefined;
@@ -192,8 +254,8 @@ interface IOrganization {
 }
 interface IOrganizationDocument extends IOrganization, Document {
 }
-type MongooseSpecificTypes$1 = keyof Document;
-type CreateOrganization = Omit<IOrganizationDocument, MongooseSpecificTypes$1>;
+type MongooseSpecificTypes = keyof Document;
+type CreateOrganization = Omit<IOrganizationDocument, MongooseSpecificTypes>;
 interface OrganizationDTO {
     id: string;
     name: string;
@@ -217,46 +279,6 @@ declare const organizationSchema: mongoose.Schema<IOrganizationDocument, mongoos
  * @returns MessageDTO type object ready for frontend consumption
  */
 declare const transformToMessageDTO: (message: IMessageDocument) => MessageDTO;
-
-declare const TYPE_OF_CHANNEL: {
-    readonly channel: "channel";
-    readonly direct: "direct";
-};
-type TYPE_OF_CHANNEL = (typeof TYPE_OF_CHANNEL)[keyof typeof TYPE_OF_CHANNEL];
-interface IConversation {
-    type: TYPE_OF_CHANNEL;
-    name?: string;
-    description?: string;
-    participants?: mongoose.Types.ObjectId[];
-    organizationId: mongoose.Types.ObjectId;
-    uniqueKey?: string;
-    createdAt: Date;
-    updatedAt: Date;
-    archived: boolean;
-}
-interface IConversationDocument extends Document, IConversation {
-}
-type MongooseSpecificTypes = keyof Document;
-type CreateConversation = Omit<IConversationDocument, MongooseSpecificTypes>;
-interface ConversationDTO {
-    id: string;
-    type: TYPE_OF_CHANNEL;
-    name: string | null;
-    description: string | null;
-    participants: string[];
-    organizationId: string;
-    uniqueKey: string | null;
-    createdAt: string;
-    updatedAt: string;
-    archived: boolean;
-}
-interface ConversationDetailsDTO {
-    id: string;
-    name: string | null;
-    description: string | null;
-    members: PublicUserFields[];
-    admin: PublicUserFields;
-}
 
 /**
  * Converts a conversation document from the database to a DTO format for the frontend.
@@ -317,4 +339,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type ConversationDetailsDTO, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserDTO, type PublicUserFields, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserDTO, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

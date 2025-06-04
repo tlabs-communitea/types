@@ -25,6 +25,17 @@ export interface IConversation {
   };
 }
 
+export interface ConversationMetadata {
+  adminFlaggedBy: mongoose.Types.ObjectId[]; // Array of user IDs who flagged the conversation
+  adminHidden: boolean; // Indicates if the conversation is hidden by an admin
+}
+
+export interface ConversationMetadataDTO {
+  adminFlaggedBy: string[]; // Array of user IDs who flagged the conversation
+  adminHidden: boolean; // Indicates if the conversation is hidden by an admin
+}
+
+
 export interface IConversationDocument extends Document, IConversation { }
 
 type MongooseSpecificTypes = keyof Document;

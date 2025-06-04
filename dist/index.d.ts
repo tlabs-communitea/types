@@ -249,8 +249,8 @@ interface ConversationDTO {
     createdAt: string;
     updatedAt: string;
     metadata: {
-        adminFlaggedBy?: string[];
-        adminHidden?: boolean;
+        adminFlaggedBy: string[];
+        adminHidden: boolean;
     };
 }
 interface ConversationDetailsDTO {

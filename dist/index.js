@@ -342,7 +342,7 @@ var conversationTransformToDTO = (conversation) => {
     participants: conversation?.participants ? conversation.participants.map((id) => id.toString()) : [],
     metadata: {
       adminFlaggedBy: mapObjectIdsToStrings2(conversation.metadata?.adminFlaggedBy || null),
-      adminHidden: conversation.metadata.adminHidden || false
+      adminHidden: conversation.metadata?.adminHidden || false
     }
   };
   return transformedConversation;

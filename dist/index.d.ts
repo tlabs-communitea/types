@@ -99,6 +99,7 @@ interface IUser {
     organizationId: Types.ObjectId;
     role: Role;
     organizationAddress?: string;
+    isLocked: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -119,6 +120,7 @@ interface UserDTO {
     organizationId: string;
     role: Role;
     organizationAddress: string | null;
+    isLocked: boolean;
     createdAt: string;
     updatedAt: string;
 }

@@ -273,15 +273,27 @@ declare const organizationSchema: mongoose.Schema<IOrganizationDocument, mongoos
     __v: number;
 }>;
 
+declare const NOTIFICATION_TYPE: {
+    readonly MESSAGE: "message";
+    readonly MENTION: "mention";
+    readonly LIKE: "like";
+    readonly REPLY: "reply";
+};
+type NotificationType = typeof NOTIFICATION_TYPE[keyof typeof NOTIFICATION_TYPE];
+declare const NOTIFICATION_STATUS: {
+    readonly READ: "read";
+    readonly UNREAD: "unread";
+};
+type NotificationStatus = typeof NOTIFICATION_STATUS[keyof typeof NOTIFICATION_STATUS];
 interface INotification {
     sourceUserId: Types.ObjectId;
     targetUserId: Types.ObjectId;
-    type: 'message' | 'mention' | 'like' | 'reply';
+    type: NotificationType;
     title: string;
     content: string;
-    status: 'unread' | 'read';
-    createdAt?: Date;
-    updatedAt?: Date;
+    status: NotificationStatus;
+    createdAt: Date;
+    updatedAt: Date;
     link: string | null;
 }
 interface INotificationDocument extends INotification, mongoose.Document {
@@ -305,8 +317,8 @@ declare const NotificationModel: Model<INotificationDocument>;
 interface IPushToken {
     userId: Types.ObjectId;
     token: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }
 interface IPushTokenDocument extends IPushToken, Document {
 }
@@ -389,4 +401,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type NotificationDTO, NotificationModel, type OrganizationDTO, type PublicUserDTO, PushTokenModel, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type OrganizationDTO, type PublicUserDTO, PushTokenModel, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

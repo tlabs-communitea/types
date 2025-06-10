@@ -249,6 +249,20 @@ var Organization_default = organizationSchema;
 
 // src/types/Notification.ts
 import mongoose6, { Schema as Schema3 } from "mongoose";
+
+// src/notificationsDTO/types.ts
+var NOTIFICATION_TYPE = {
+  MESSAGE: "message",
+  MENTION: "mention",
+  LIKE: "like",
+  REPLY: "reply"
+};
+var NOTIFICATION_STATUS = {
+  READ: "read",
+  UNREAD: "unread"
+};
+
+// src/types/Notification.ts
 var notificationSchema = new Schema3(
   {
     sourceUserId: {
@@ -264,7 +278,7 @@ var notificationSchema = new Schema3(
     },
     type: {
       type: String,
-      enum: ["message", "mention", "like", "reply"],
+      enum: NOTIFICATION_TYPE,
       required: true
     },
     title: {
@@ -277,7 +291,7 @@ var notificationSchema = new Schema3(
     },
     status: {
       type: String,
-      enum: ["unread", "read"],
+      enum: NOTIFICATION_STATUS,
       default: "unread"
     },
     link: {
@@ -431,7 +445,7 @@ function transformToNotificationDTO(notification) {
     content: notification.content,
     status: notification.status,
     link: notification.link,
-    createdAt: notification.createdAt?.toISOString() || (/* @__PURE__ */ new Date()).toISOString()
+    createdAt: notification.createdAt.toISOString()
   };
 }
 
@@ -479,6 +493,8 @@ export {
   DirectMessage_default as DirectMessageSchema,
   MessageHistory_default as MessageHistorySchema,
   MessageMetadataSchema,
+  NOTIFICATION_STATUS,
+  NOTIFICATION_TYPE,
   NotificationModel,
   PushTokenModel,
   ROLES,

@@ -34,6 +34,8 @@ __export(index_exports, {
   DirectMessageSchema: () => DirectMessage_default,
   MessageHistorySchema: () => MessageHistory_default,
   MessageMetadataSchema: () => MessageMetadataSchema,
+  NOTIFICATION_STATUS: () => NOTIFICATION_STATUS,
+  NOTIFICATION_TYPE: () => NOTIFICATION_TYPE,
   NotificationModel: () => NotificationModel,
   PushTokenModel: () => PushTokenModel,
   ROLES: () => ROLES,
@@ -304,6 +306,20 @@ var Organization_default = organizationSchema;
 
 // src/types/Notification.ts
 var import_mongoose6 = __toESM(require("mongoose"));
+
+// src/notificationsDTO/types.ts
+var NOTIFICATION_TYPE = {
+  MESSAGE: "message",
+  MENTION: "mention",
+  LIKE: "like",
+  REPLY: "reply"
+};
+var NOTIFICATION_STATUS = {
+  READ: "read",
+  UNREAD: "unread"
+};
+
+// src/types/Notification.ts
 var notificationSchema = new import_mongoose6.Schema(
   {
     sourceUserId: {
@@ -319,7 +335,7 @@ var notificationSchema = new import_mongoose6.Schema(
     },
     type: {
       type: String,
-      enum: ["message", "mention", "like", "reply"],
+      enum: NOTIFICATION_TYPE,
       required: true
     },
     title: {
@@ -332,7 +348,7 @@ var notificationSchema = new import_mongoose6.Schema(
     },
     status: {
       type: String,
-      enum: ["unread", "read"],
+      enum: NOTIFICATION_STATUS,
       default: "unread"
     },
     link: {
@@ -486,7 +502,7 @@ function transformToNotificationDTO(notification) {
     content: notification.content,
     status: notification.status,
     link: notification.link,
-    createdAt: notification.createdAt?.toISOString() || (/* @__PURE__ */ new Date()).toISOString()
+    createdAt: notification.createdAt.toISOString()
   };
 }
 
@@ -535,6 +551,8 @@ var DirectMessage_default = DirectMessageSchema;
   DirectMessageSchema,
   MessageHistorySchema,
   MessageMetadataSchema,
+  NOTIFICATION_STATUS,
+  NOTIFICATION_TYPE,
   NotificationModel,
   PushTokenModel,
   ROLES,

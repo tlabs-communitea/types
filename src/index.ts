@@ -28,5 +28,8 @@ export * from "../src/organizationDTO/OrganizationTransform"
 export * from "../src/userDTO/types"
 export * from "../src/userDTO/UserTransform"
 
+export * from "../src/notificationsDTO/types"
+export * from "../src/notificationsDTO/NotificationTransform"
+
 //CHORE: redundent export, not used type, will remove this later
 export {default as DirectMessageSchema} from './types/DirectMessage';

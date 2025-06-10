@@ -422,6 +422,19 @@ var userTransformToPublicDTO = (user) => {
   };
 };
 
+// src/notificationsDTO/NotificationTransform.ts
+function transformToNotificationDTO(notification) {
+  return {
+    sourceUserId: notification.sourceUserId.toString(),
+    type: notification.type,
+    title: notification.title,
+    content: notification.content,
+    status: notification.status,
+    link: notification.link,
+    createdAt: notification.createdAt?.toISOString() || (/* @__PURE__ */ new Date()).toISOString()
+  };
+}
+
 // src/types/DirectMessage.ts
 import mongoose8 from "mongoose";
 var { Schema: Schema4 } = mongoose8;
@@ -477,6 +490,7 @@ export {
   Organization_default as organizationSchema,
   pushTokenSchema,
   transformToMessageDTO,
+  transformToNotificationDTO,
   transformToOrganizationDTO,
   User_default as userSchema,
   userTransformToDTO,

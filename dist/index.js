@@ -45,6 +45,7 @@ __export(index_exports, {
   organizationSchema: () => Organization_default,
   pushTokenSchema: () => pushTokenSchema,
   transformToMessageDTO: () => transformToMessageDTO,
+  transformToNotificationDTO: () => transformToNotificationDTO,
   transformToOrganizationDTO: () => transformToOrganizationDTO,
   userSchema: () => User_default,
   userTransformToDTO: () => userTransformToDTO,
@@ -476,6 +477,19 @@ var userTransformToPublicDTO = (user) => {
   };
 };
 
+// src/notificationsDTO/NotificationTransform.ts
+function transformToNotificationDTO(notification) {
+  return {
+    sourceUserId: notification.sourceUserId.toString(),
+    type: notification.type,
+    title: notification.title,
+    content: notification.content,
+    status: notification.status,
+    link: notification.link,
+    createdAt: notification.createdAt?.toISOString() || (/* @__PURE__ */ new Date()).toISOString()
+  };
+}
+
 // src/types/DirectMessage.ts
 var import_mongoose8 = __toESM(require("mongoose"));
 var { Schema: Schema4 } = import_mongoose8.default;
@@ -532,6 +546,7 @@ var DirectMessage_default = DirectMessageSchema;
   organizationSchema,
   pushTokenSchema,
   transformToMessageDTO,
+  transformToNotificationDTO,
   transformToOrganizationDTO,
   userSchema,
   userTransformToDTO,

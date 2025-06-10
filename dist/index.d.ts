@@ -286,6 +286,11 @@ interface INotification {
 }
 interface INotificationDocument extends INotification, mongoose.Document {
 }
+type NotificationDTO = Omit<INotification, 'targetUserId' | 'updatedAt' | 'createdAt' | 'sourceUserId'> & {
+    sourceUserId: string;
+    createdAt: string;
+};
+
 declare const notificationSchema: mongoose.Schema<INotificationDocument, mongoose.Model<INotificationDocument, any, any, any, mongoose.Document<unknown, any, INotificationDocument, any> & INotificationDocument & Required<{
     _id: unknown;
 }> & {
@@ -350,6 +355,8 @@ declare const userTransformToDTO: (user: IUserDocument) => UserDTO;
  */
 declare const userTransformToPublicDTO: (user: IUserDocument) => PublicUserDTO;
 
+declare function transformToNotificationDTO(notification: INotificationDocument): NotificationDTO;
+
 declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
 }, {
@@ -382,4 +389,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, NotificationModel, type OrganizationDTO, type PublicUserDTO, PushTokenModel, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type NotificationDTO, NotificationModel, type OrganizationDTO, type PublicUserDTO, PushTokenModel, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

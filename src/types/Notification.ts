@@ -9,7 +9,7 @@ export interface INotification {
   status: 'unread' | 'read'; // Status of the notification
   createdAt?: Date; // Timestamp when the notification was created
   updatedAt?: Date; // Timestamp when the notification was last updated
-  link?: string; // Optional link to redirect the user when they click the notification
+  link: string | null; // Optional link to redirect the user when they click the notification
 }
 
 export interface INotificationDocument

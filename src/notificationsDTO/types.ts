@@ -10,10 +10,8 @@ export const NOTIFICATION_TYPE = {
 export type NotificationType = typeof NOTIFICATION_TYPE[keyof typeof NOTIFICATION_TYPE];
 
 export const NOTIFICATION_STATUS = {
-  MESSAGE: 'message',
-  MENTION: 'mention',
-  LIKE: 'like',
-  REPLY: 'reply',
+  READ: "read",
+  UNREAD: "unread",
 } as const;
 
 export type NotificationStatus = typeof NOTIFICATION_STATUS[keyof typeof NOTIFICATION_STATUS];

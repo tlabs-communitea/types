@@ -5,6 +5,8 @@ export * from './types/User';
 export * from './types/MessageHistory';
 export * from './types/Conversation';
 export * from './types/Organization';
+export * from './types/Notification';
+export * from './types/PushToken';
 
 //default imports as named imports
 export {default as userSchema} from './types/User';

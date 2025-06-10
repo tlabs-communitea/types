@@ -34,12 +34,16 @@ __export(index_exports, {
   DirectMessageSchema: () => DirectMessage_default,
   MessageHistorySchema: () => MessageHistory_default,
   MessageMetadataSchema: () => MessageMetadataSchema,
+  NotificationModel: () => NotificationModel,
+  PushTokenModel: () => PushTokenModel,
   ROLES: () => ROLES,
   TYPE_OF_CHANNEL: () => TYPE_OF_CHANNEL,
   conversationSchema: () => Conversation_default,
   conversationTransformToDTO: () => conversationTransformToDTO,
   messageSchema: () => Message_default,
+  notificationSchema: () => notificationSchema,
   organizationSchema: () => Organization_default,
+  pushTokenSchema: () => pushTokenSchema,
   transformToMessageDTO: () => transformToMessageDTO,
   transformToOrganizationDTO: () => transformToOrganizationDTO,
   userSchema: () => User_default,
@@ -297,6 +301,80 @@ var organizationSchema = new import_mongoose5.default.Schema(
 );
 var Organization_default = organizationSchema;
 
+// src/types/Notification.ts
+var import_mongoose6 = __toESM(require("mongoose"));
+var notificationSchema = new import_mongoose6.Schema(
+  {
+    sourceUserId: {
+      type: import_mongoose6.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    targetUserId: {
+      type: import_mongoose6.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true
+    },
+    type: {
+      type: String,
+      enum: ["message", "mention", "like", "reply"],
+      required: true
+    },
+    title: {
+      type: String,
+      required: true
+    },
+    content: {
+      type: String,
+      required: true
+    },
+    status: {
+      type: String,
+      enum: ["unread", "read"],
+      default: "unread"
+    },
+    link: {
+      type: String,
+      default: null
+    }
+  },
+  {
+    timestamps: true
+    // Automatically handles createdAt and updatedAt
+  }
+);
+var NotificationModel = import_mongoose6.default.model(
+  "Notification",
+  notificationSchema
+);
+
+// src/types/PushToken.ts
+var import_mongoose7 = __toESM(require("mongoose"));
+var pushTokenSchema = new import_mongoose7.default.Schema(
+  {
+    userId: {
+      type: import_mongoose7.default.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true
+    },
+    token: {
+      type: String,
+      required: true,
+      unique: true
+    }
+  },
+  {
+    timestamps: true
+    // automatically handles createdAt and updatedAt
+  }
+);
+var PushTokenModel = import_mongoose7.default.model(
+  "PushToken",
+  pushTokenSchema
+);
+
 // src/messagesDTO/MessageTransform.ts
 function mapObjectIdsToStrings(ids) {
   return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
@@ -399,17 +477,17 @@ var userTransformToPublicDTO = (user) => {
 };
 
 // src/types/DirectMessage.ts
-var import_mongoose6 = __toESM(require("mongoose"));
-var { Schema: Schema3 } = import_mongoose6.default;
-var DirectMessageSchema = new Schema3(
+var import_mongoose8 = __toESM(require("mongoose"));
+var { Schema: Schema4 } = import_mongoose8.default;
+var DirectMessageSchema = new Schema4(
   {
     conversationId: {
-      type: Schema3.Types.ObjectId,
+      type: Schema4.Types.ObjectId,
       ref: "Conversation",
       required: true
     },
     senderId: {
-      type: Schema3.Types.ObjectId,
+      type: Schema4.Types.ObjectId,
       ref: "User",
       required: true
     },
@@ -443,12 +521,16 @@ var DirectMessage_default = DirectMessageSchema;
   DirectMessageSchema,
   MessageHistorySchema,
   MessageMetadataSchema,
+  NotificationModel,
+  PushTokenModel,
   ROLES,
   TYPE_OF_CHANNEL,
   conversationSchema,
   conversationTransformToDTO,
   messageSchema,
+  notificationSchema,
   organizationSchema,
+  pushTokenSchema,
   transformToMessageDTO,
   transformToOrganizationDTO,
   userSchema,

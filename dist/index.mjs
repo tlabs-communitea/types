@@ -247,6 +247,80 @@ var organizationSchema = new mongoose5.Schema(
 );
 var Organization_default = organizationSchema;
 
+// src/types/Notification.ts
+import mongoose6, { Schema as Schema3 } from "mongoose";
+var notificationSchema = new Schema3(
+  {
+    sourceUserId: {
+      type: Schema3.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    targetUserId: {
+      type: Schema3.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true
+    },
+    type: {
+      type: String,
+      enum: ["message", "mention", "like", "reply"],
+      required: true
+    },
+    title: {
+      type: String,
+      required: true
+    },
+    content: {
+      type: String,
+      required: true
+    },
+    status: {
+      type: String,
+      enum: ["unread", "read"],
+      default: "unread"
+    },
+    link: {
+      type: String,
+      default: null
+    }
+  },
+  {
+    timestamps: true
+    // Automatically handles createdAt and updatedAt
+  }
+);
+var NotificationModel = mongoose6.model(
+  "Notification",
+  notificationSchema
+);
+
+// src/types/PushToken.ts
+import mongoose7 from "mongoose";
+var pushTokenSchema = new mongoose7.Schema(
+  {
+    userId: {
+      type: mongoose7.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true
+    },
+    token: {
+      type: String,
+      required: true,
+      unique: true
+    }
+  },
+  {
+    timestamps: true
+    // automatically handles createdAt and updatedAt
+  }
+);
+var PushTokenModel = mongoose7.model(
+  "PushToken",
+  pushTokenSchema
+);
+
 // src/messagesDTO/MessageTransform.ts
 function mapObjectIdsToStrings(ids) {
   return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
@@ -349,17 +423,17 @@ var userTransformToPublicDTO = (user) => {
 };
 
 // src/types/DirectMessage.ts
-import mongoose6 from "mongoose";
-var { Schema: Schema3 } = mongoose6;
-var DirectMessageSchema = new Schema3(
+import mongoose8 from "mongoose";
+var { Schema: Schema4 } = mongoose8;
+var DirectMessageSchema = new Schema4(
   {
     conversationId: {
-      type: Schema3.Types.ObjectId,
+      type: Schema4.Types.ObjectId,
       ref: "Conversation",
       required: true
     },
     senderId: {
-      type: Schema3.Types.ObjectId,
+      type: Schema4.Types.ObjectId,
       ref: "User",
       required: true
     },
@@ -392,12 +466,16 @@ export {
   DirectMessage_default as DirectMessageSchema,
   MessageHistory_default as MessageHistorySchema,
   MessageMetadataSchema,
+  NotificationModel,
+  PushTokenModel,
   ROLES,
   TYPE_OF_CHANNEL,
   Conversation_default as conversationSchema,
   conversationTransformToDTO,
   Message_default as messageSchema,
+  notificationSchema,
   Organization_default as organizationSchema,
+  pushTokenSchema,
   transformToMessageDTO,
   transformToOrganizationDTO,
   User_default as userSchema,

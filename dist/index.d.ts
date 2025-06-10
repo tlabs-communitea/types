@@ -1,4 +1,4 @@
-import mongoose, { Document, Types } from 'mongoose';
+import mongoose, { Document, Types, Model } from 'mongoose';
 
 declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
     messageId: any;
@@ -273,6 +273,49 @@ declare const organizationSchema: mongoose.Schema<IOrganizationDocument, mongoos
     __v: number;
 }>;
 
+interface INotification {
+    sourceUserId: Types.ObjectId;
+    targetUserId: Types.ObjectId;
+    type: 'message' | 'mention' | 'like' | 'reply';
+    title: string;
+    content: string;
+    status: 'unread' | 'read';
+    createdAt?: Date;
+    updatedAt?: Date;
+    link: string | null;
+}
+interface INotificationDocument extends INotification, mongoose.Document {
+}
+declare const notificationSchema: mongoose.Schema<INotificationDocument, mongoose.Model<INotificationDocument, any, any, any, mongoose.Document<unknown, any, INotificationDocument, any> & INotificationDocument & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, INotificationDocument, mongoose.Document<unknown, {}, mongoose.FlatRecord<INotificationDocument>, {}> & mongoose.FlatRecord<INotificationDocument> & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}>;
+declare const NotificationModel: Model<INotificationDocument>;
+
+interface IPushToken {
+    userId: Types.ObjectId;
+    token: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+interface IPushTokenDocument extends IPushToken, Document {
+}
+declare const pushTokenSchema: mongoose.Schema<IPushTokenDocument, mongoose.Model<IPushTokenDocument, any, any, any, mongoose.Document<unknown, any, IPushTokenDocument, any> & IPushTokenDocument & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, IPushTokenDocument, mongoose.Document<unknown, {}, mongoose.FlatRecord<IPushTokenDocument>, {}> & mongoose.FlatRecord<IPushTokenDocument> & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}>;
+declare const PushTokenModel: Model<IPushTokenDocument>;
+
 /**
  * Converts a IMessage from the database to a DTO format for the frontend
  * @param message of type IMessage
@@ -339,4 +382,4 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
     __v: number;
 }>;
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type OrganizationDTO, type PublicUserDTO, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, NotificationModel, type OrganizationDTO, type PublicUserDTO, PushTokenModel, ROLES, type Role, TYPE_OF_CHANNEL, type UserDTO, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

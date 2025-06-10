@@ -3,11 +3,11 @@ import mongoose, { Model, Types, Document } from 'mongoose';
 export interface IPushToken {
   userId: Types.ObjectId;
   token: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface IPushTokenDocument extends IPushToken, Document {}
+export interface IPushTokenDocument extends IPushToken, Document { }
 
 export const pushTokenSchema = new mongoose.Schema<IPushTokenDocument>(
   {

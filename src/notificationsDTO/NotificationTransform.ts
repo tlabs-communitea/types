@@ -8,6 +8,6 @@ export function transformToNotificationDTO(notification: INotificationDocument):
 		content: notification.content,
 		status: notification.status,
 		link: notification.link,
-		createdAt: notification.createdAt?.toISOString() || new Date().toISOString(),
+		createdAt: notification.createdAt.toISOString(),
 	};
 }

@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Model } from 'mongoose';
-import { INotificationDocument } from '../notificationsDTO/types';
+import { INotificationDocument, NOTIFICATION_TYPE, NOTIFICATION_STATUS } from '../notificationsDTO/types';
 
 export const notificationSchema = new Schema<INotificationDocument>(
   {
@@ -16,7 +16,7 @@ export const notificationSchema = new Schema<INotificationDocument>(
     },
     type: {
       type: String,
-      enum: ['message', 'mention', 'like', 'reply'],
+      enum: NOTIFICATION_TYPE,
       required: true,
     },
     title: {
@@ -29,7 +29,7 @@ export const notificationSchema = new Schema<INotificationDocument>(
     },
     status: {
       type: String,
-      enum: ['unread', 'read'],
+      enum: NOTIFICATION_STATUS,
       default: 'unread',
     },
     link: {

@@ -28,3 +28,9 @@ export * from "../src/userDTO/UserTransform"
 
 //CHORE: redundent export, not used type, will remove this later
 export {default as DirectMessageSchema} from './types/DirectMessage';
+
+//exporting from admin types
+export * from './types/admin/AdminEndpoint';
+
+//exporting from api Response types
+export * from './types/api/Response';

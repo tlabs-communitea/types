@@ -1,4 +1,4 @@
-import mongoose, { Document, Types } from 'mongoose';
+import mongoose, { Document, Types, Model } from 'mongoose';
 
 declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
     messageId: any;
@@ -273,6 +273,66 @@ declare const organizationSchema: mongoose.Schema<IOrganizationDocument, mongoos
     __v: number;
 }>;
 
+declare const NOTIFICATION_TYPE: {
+    readonly MESSAGE: "message";
+    readonly MENTION: "mention";
+    readonly LIKE: "like";
+    readonly REPLY: "reply";
+};
+type NotificationType = typeof NOTIFICATION_TYPE[keyof typeof NOTIFICATION_TYPE];
+declare const NOTIFICATION_STATUS: {
+    readonly READ: "read";
+    readonly UNREAD: "unread";
+};
+type NotificationStatus = typeof NOTIFICATION_STATUS[keyof typeof NOTIFICATION_STATUS];
+interface INotification {
+    sourceUserId: Types.ObjectId;
+    targetUserId: Types.ObjectId;
+    type: NotificationType;
+    title: string;
+    content: string;
+    status: NotificationStatus;
+    createdAt: Date;
+    updatedAt: Date;
+    link: string | null;
+}
+interface INotificationDocument extends INotification, mongoose.Document {
+}
+type NotificationDTO = Omit<INotification, 'targetUserId' | 'updatedAt' | 'createdAt' | 'sourceUserId'> & {
+    sourceUserId: string;
+    createdAt: string;
+};
+
+declare const notificationSchema: mongoose.Schema<INotificationDocument, mongoose.Model<INotificationDocument, any, any, any, mongoose.Document<unknown, any, INotificationDocument, any> & INotificationDocument & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, INotificationDocument, mongoose.Document<unknown, {}, mongoose.FlatRecord<INotificationDocument>, {}> & mongoose.FlatRecord<INotificationDocument> & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}>;
+declare const NotificationModel: Model<INotificationDocument>;
+
+interface IPushToken {
+    userId: Types.ObjectId;
+    token: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+interface IPushTokenDocument extends IPushToken, Document {
+}
+declare const pushTokenSchema: mongoose.Schema<IPushTokenDocument, mongoose.Model<IPushTokenDocument, any, any, any, mongoose.Document<unknown, any, IPushTokenDocument, any> & IPushTokenDocument & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, IPushTokenDocument, mongoose.Document<unknown, {}, mongoose.FlatRecord<IPushTokenDocument>, {}> & mongoose.FlatRecord<IPushTokenDocument> & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}>;
+declare const PushTokenModel: Model<IPushTokenDocument>;
+
 /**
  * Converts a IMessage from the database to a DTO format for the frontend
  * @param message of type IMessage
@@ -306,6 +366,8 @@ declare const userTransformToDTO: (user: IUserDocument) => UserDTO;
  * @returns The transformed public user DTO.
  */
 declare const userTransformToPublicDTO: (user: IUserDocument) => PublicUserDTO;
+
+declare function transformToNotificationDTO(notification: INotificationDocument): NotificationDTO;
 
 declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
@@ -369,4 +431,34 @@ interface FailureResponse {
     error: string;
 }
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type IOrganization, type IOrganizationDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, type OrganizationDTO, type PublicUserDTO, ROLES, type Role, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, organizationSchema, transformToMessageDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+interface UserWithoutSensitiveInfo {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    isLocked: boolean;
+    avatar: string | null;
+    organizationId: string;
+    description: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+type CountPerDate = Record<string, number>;
+interface MostActiveConversation {
+    id?: string;
+    name: string;
+    messageCount: number;
+}
+interface UserAndMessageCount {
+    userCount: number;
+    messageCount: number;
+}
+
+interface SuccessResponse {
+    message: string;
+}
+interface FailureResponse {
+    error: string;
+}
+
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type FailureResponse, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type MostActiveConversation, type OrganizationDTO, type PublicUserDTO, PushTokenModel, ROLES, type Role, type SuccessResponse, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserAndMessageCount, type UserDTO, type UserWithoutSensitiveInfo, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

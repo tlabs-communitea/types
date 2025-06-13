@@ -16,7 +16,7 @@ export const notificationSchema = new Schema<INotificationDocument>(
     },
     type: {
       type: String,
-      enum: NOTIFICATION_TYPE,
+      enum: Object.values(NOTIFICATION_TYPE),
       required: true,
     },
     title: {
@@ -29,7 +29,7 @@ export const notificationSchema = new Schema<INotificationDocument>(
     },
     status: {
       type: String,
-      enum: NOTIFICATION_STATUS,
+      enum: Object.values(NOTIFICATION_STATUS),
       default: 'unread',
     },
     link: {

@@ -87,6 +87,12 @@ declare const ROLES: {
     readonly ADMIN: "admin";
     readonly MEMBER: "member";
 };
+declare const REASON_FOR_LOCK: {
+    readonly PENDING_APPROVAL: "pending approval";
+    readonly ADMIN_LOCK: "admin lock";
+    readonly UNLOCKED: "unlocked";
+};
+type ReasonForLock = typeof REASON_FOR_LOCK[keyof typeof REASON_FOR_LOCK];
 type Role = typeof ROLES[keyof typeof ROLES];
 interface IUser {
     name: string;
@@ -102,6 +108,7 @@ interface IUser {
     isLocked: boolean;
     createdAt: Date;
     updatedAt: Date;
+    reasonForLock: ReasonForLock;
 }
 interface IUserDocument extends IUser, Document {
 }
@@ -122,6 +129,7 @@ interface UserDTO {
     isLocked: boolean;
     createdAt: string;
     updatedAt: string;
+    reasonForLock: ReasonForLock;
 }
 interface PublicUserDTO {
     id: string;
@@ -212,7 +220,7 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    type: string;
+    type: "channel" | "direct";
     metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
@@ -223,7 +231,7 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    type: string;
+    type: "channel" | "direct";
     metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
@@ -234,7 +242,7 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
-    type: string;
+    type: "channel" | "direct";
     metadata: ConversationMetadata;
     organizationId: any;
     participants: any[];
@@ -431,4 +439,4 @@ interface FailureResponse {
     error: string;
 }
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type OrganizationDTO, type PublicUserDTO, PushTokenModel, ROLES, type Role, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type OrganizationDTO, type PublicUserDTO, PushTokenModel, REASON_FOR_LOCK, ROLES, type ReasonForLock, type Role, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

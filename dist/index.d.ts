@@ -420,6 +420,7 @@ interface UserWithoutSensitiveInfo {
     description: string | null;
     createdAt: string;
     updatedAt: string;
+    reasonForLock: ReasonForLock;
 }
 type CountPerDate = Record<string, number>;
 interface MostActiveConversation {

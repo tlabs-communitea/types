@@ -126,6 +126,11 @@ var ROLES = {
   ADMIN: "admin",
   MEMBER: "member"
 };
+var REASON_FOR_LOCK = {
+  PENDING_APPROVAL: "pending approval",
+  ADMIN_LOCK: "admin lock",
+  UNLOCKED: "unlocked"
+};
 
 // src/types/User.ts
 var userSchema = new mongoose3.Schema(
@@ -143,10 +148,24 @@ var userSchema = new mongoose3.Schema(
       ref: "Organization",
       required: true
     },
-    role: { type: String, enum: ROLES, default: ROLES.MEMBER },
+    role: { type: String, enum: Object.values(ROLES), default: ROLES.MEMBER },
     organizationAddress: { type: String },
-    isLocked: { type: Boolean, default: false }
+    isLocked: { type: Boolean, default: false },
     // indicates if the user account is locked by the admin
+    reasonForLock: {
+      type: String,
+      enum: Object.values(REASON_FOR_LOCK),
+      default: REASON_FOR_LOCK.UNLOCKED,
+      validate: {
+        validator: function(value) {
+          if (this.isLocked) {
+            return value !== REASON_FOR_LOCK.UNLOCKED;
+          }
+          return value === REASON_FOR_LOCK.UNLOCKED;
+        },
+        message: (props) => `${props.value} is not a valid reason for locking the user account.`
+      }
+    }
   },
   { timestamps: true }
 );
@@ -181,7 +200,7 @@ var ConversationSchema = new mongoose4.Schema(
   {
     type: {
       type: String,
-      enum: TYPE_OF_CHANNEL,
+      enum: Object.values(TYPE_OF_CHANNEL),
       required: true
     },
     participants: {
@@ -278,7 +297,7 @@ var notificationSchema = new Schema3(
     },
     type: {
       type: String,
-      enum: NOTIFICATION_TYPE,
+      enum: Object.values(NOTIFICATION_TYPE),
       required: true
     },
     title: {
@@ -291,7 +310,7 @@ var notificationSchema = new Schema3(
     },
     status: {
       type: String,
-      enum: NOTIFICATION_STATUS,
+      enum: Object.values(NOTIFICATION_STATUS),
       default: "unread"
     },
     link: {
@@ -416,7 +435,8 @@ var userTransformToDTO = (user) => {
     organizationAddress: user.organizationAddress || null,
     isLocked: user.isLocked,
     createdAt: user.createdAt.toISOString(),
-    updatedAt: user.updatedAt.toISOString()
+    updatedAt: user.updatedAt.toISOString(),
+    reasonForLock: user.reasonForLock || REASON_FOR_LOCK.UNLOCKED
   };
   return transformedUser;
 };
@@ -497,6 +517,7 @@ export {
   NOTIFICATION_TYPE,
   NotificationModel,
   PushTokenModel,
+  REASON_FOR_LOCK,
   ROLES,
   TYPE_OF_CHANNEL,
   Conversation_default as conversationSchema,

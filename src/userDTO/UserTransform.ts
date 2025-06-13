@@ -1,5 +1,5 @@
-import { IUserDocument, UserDTO, PublicUserDTO } from "./types";
-import mongoose, { Types } from "mongoose";
+import { IUserDocument, UserDTO, PublicUserDTO, REASON_FOR_LOCK } from "./types";
+import { Types } from "mongoose";
 
 /**
  * Transforms a user document into a DTO format.
@@ -25,6 +25,7 @@ export const userTransformToDTO = (user: IUserDocument): UserDTO => {
         isLocked: user.isLocked,
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
+        reasonForLock: user.reasonForLock || REASON_FOR_LOCK.UNLOCKED,
     }
     return transformedUser;
 }

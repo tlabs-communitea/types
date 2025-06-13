@@ -1,10 +1,17 @@
-import mongoose, { Model, Types, Document } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 export const ROLES = {
   ADMIN: 'admin',
   MEMBER: 'member',
 } as const;
 
+export const REASON_FOR_LOCK = {
+  PENDING_APPROVAL: 'pending approval',
+  ADMIN_LOCK: 'admin lock',
+  UNLOCKED: 'unlocked',
+} as const;
+
+export type ReasonForLock = typeof REASON_FOR_LOCK[keyof typeof REASON_FOR_LOCK];
 export type Role = typeof ROLES[keyof typeof ROLES];
 
 // This interface represents the shape of the User document in MongoDB
@@ -22,6 +29,7 @@ export interface IUser {
   isLocked: boolean; // indicates if the user account is locked by the admin
   createdAt: Date;
   updatedAt: Date;
+  reasonForLock: ReasonForLock;
 }
 
 // This interface includes Mongoose Document properties like _id, and methods.
@@ -50,6 +58,7 @@ export interface UserDTO {
   isLocked: boolean;
   createdAt: string;
   updatedAt: string;
+  reasonForLock: ReasonForLock;
 }
 
 export interface PublicUserDTO {

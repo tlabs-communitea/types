@@ -30,12 +30,12 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       default: REASON_FOR_LOCK.UNLOCKED,
       validate: {
         validator: function (value: ReasonForLock) {
-          // If the user is locked, reasonForLock must not be null/undefined/'unlocked'
-          if (this.isLocked && value === REASON_FOR_LOCK.UNLOCKED) {
-            return false;
+          //when locked, unlocked is not a valid reason
+          if(this.isLocked){
+            return value !== REASON_FOR_LOCK.UNLOCKED;
           }
-          // value must be one of the allowed enum values
-          return Object.values(REASON_FOR_LOCK).includes(value);
+          //when not locked, unlocked is the only valid reason 
+          return value === REASON_FOR_LOCK.UNLOCKED 
         },
         message: (props: any) =>
           `${props.value} is not a valid reason for locking the user account.`,

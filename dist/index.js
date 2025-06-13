@@ -216,10 +216,10 @@ var userSchema = new import_mongoose3.default.Schema(
       default: REASON_FOR_LOCK.UNLOCKED,
       validate: {
         validator: function(value) {
-          if (this.isLocked && value === REASON_FOR_LOCK.UNLOCKED) {
-            return false;
+          if (this.isLocked) {
+            return value !== REASON_FOR_LOCK.UNLOCKED;
           }
-          return Object.values(REASON_FOR_LOCK).includes(value);
+          return value === REASON_FOR_LOCK.UNLOCKED;
         },
         message: (props) => `${props.value} is not a valid reason for locking the user account.`
       }

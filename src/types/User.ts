@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
-import { IUserDocument, ROLES } from '../userDTO/types';
+import {
+  IUserDocument,
+  REASON_FOR_LOCK,
+  ReasonForLock,
+  ROLES,
+} from '../userDTO/types';
 
 const userSchema = new mongoose.Schema<IUserDocument>(
   {
@@ -16,9 +21,26 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       ref: 'Organization',
       required: true,
     },
-    role: { type: String, enum: ROLES, default: ROLES.MEMBER },
+    role: { type: String, enum: Object.values(ROLES), default: ROLES.MEMBER },
     organizationAddress: { type: String },
     isLocked: { type: Boolean, default: false }, // indicates if the user account is locked by the admin
+    reasonForLock: {
+      type: String,
+      enum: Object.values(REASON_FOR_LOCK),
+      default: REASON_FOR_LOCK.UNLOCKED,
+      validate: {
+        validator: function (value: ReasonForLock) {
+          // If the user is locked, reasonForLock must not be null/undefined/'unlocked'
+          if (this.isLocked && value === REASON_FOR_LOCK.UNLOCKED) {
+            return false;
+          }
+          // value must be one of the allowed enum values
+          return Object.values(REASON_FOR_LOCK).includes(value);
+        },
+        message: (props: any) =>
+          `${props.value} is not a valid reason for locking the user account.`,
+      },
+    },
   },
   { timestamps: true }
 );

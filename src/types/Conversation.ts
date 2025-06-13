@@ -23,7 +23,7 @@ const ConversationSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: TYPE_OF_CHANNEL,
+      enum: Object.values(TYPE_OF_CHANNEL),
       required: true,
     },
     participants: {

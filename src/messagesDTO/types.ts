@@ -16,7 +16,7 @@ export interface IMessage {
   metadata: MessageMetadata;
 }
 
-export interface IMessageDocument extends Document, IMessage {}
+export interface IMessageDocument extends Document, IMessage { }
 
 type MongooseSpecificTypes = keyof Document;
 export type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes>;
@@ -24,6 +24,7 @@ export type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes>;
 export interface MessageMetadata {
   userFlaggedBy?: Types.ObjectId[];
   adminFlaggedBy?: Types.ObjectId[];
+  mentionedUsers?: Types.ObjectId[];
 }
 
 // -----------------
@@ -33,6 +34,7 @@ export interface MessageMetadata {
 export interface MessageMetadataDTO {
   userFlaggedBy: string[];
   adminFlaggedBy: string[];
+  mentionedUsers: string[];
 }
 
 //message

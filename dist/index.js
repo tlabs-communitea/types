@@ -99,6 +99,11 @@ var MessageMetadataSchema = new import_mongoose2.Schema(
       type: [import_mongoose2.Schema.Types.ObjectId],
       ref: "User",
       default: []
+    },
+    mentionedUsers: {
+      type: [import_mongoose2.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
     }
   },
   { _id: false }
@@ -427,6 +432,9 @@ var transformToMessageDTO = (message) => {
       userFlaggedBy: mapObjectIdsToStrings(message.metadata.userFlaggedBy),
       adminFlaggedBy: mapObjectIdsToStrings(
         message.metadata.adminFlaggedBy
+      ),
+      mentionedUsers: mapObjectIdsToStrings(
+        message.metadata.mentionedUsers
       )
     } : null,
     // Use metadataDTO eventually

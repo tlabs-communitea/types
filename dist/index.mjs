@@ -440,6 +440,25 @@ var userTransformToDTO = (user) => {
   };
   return transformedUser;
 };
+var defaultUserMetadata = () => ({
+  interests: [],
+  prompts: [],
+  pronouns: "",
+  lifeSituation: "",
+  work: "",
+  education: "",
+  gender: "",
+  lookingFor: "",
+  sexuality: "",
+  relationshipStatus: "",
+  hasKids: null,
+  religion: "",
+  smoking: null,
+  drinking: null,
+  newToArea: null,
+  starSign: "",
+  pets: null
+});
 var userTransformToPublicDTO = (user) => {
   return {
     id: user._id.toString(),
@@ -449,10 +468,11 @@ var userTransformToPublicDTO = (user) => {
     avatar: user.avatar || null,
     description: user.description || null,
     organizationId: user.organizationId.toString(),
-    role: user.role
+    role: user.role,
     // Optionally include createdAt and updatedAt if useful for display
     // createdAt: user.createdAt.toISOString(),
     // updatedAt: user.updatedAt.toISOString(),
+    metadata: user.metadata || defaultUserMetadata()
   };
 };
 

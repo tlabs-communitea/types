@@ -45,13 +45,13 @@ const defaultUserMetadata = (): UserMetadata => ({
 
     sexuality: "",
     relationshipStatus: "",
-    hasKids: false,
+    hasKids: null,
     religion: "",
-    smoking: false,
-    drinking: false,
-    newToArea: false,
+    smoking: null,
+    drinking: null,
+    newToArea: null,
     starSign: "",
-    pets: false,
+    pets: null,
 })    
 
 /**

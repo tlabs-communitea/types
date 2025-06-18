@@ -19,6 +19,8 @@ export interface PromptAnswer {
   answer: string;
 }
 
+export type Nullable<T> = T | null;
+
 export interface UserMetadata {
   interests: string[];
   prompts: PromptAnswer[];
@@ -34,13 +36,13 @@ export interface UserMetadata {
 
   sexuality: string;
   relationshipStatus: string;
-  hasKids: boolean;
+  hasKids: Nullable<boolean>;
   religion: string;
-  smoking: boolean;
-  drinking: boolean;
-  newToArea: boolean;
+  smoking: Nullable<boolean>;
+  drinking: Nullable<boolean>;
+  newToArea: Nullable<boolean>;
   starSign: string;
-  pets: boolean;
+  pets: Nullable<boolean>;
 }
 
 // This interface represents the shape of the User document in MongoDB

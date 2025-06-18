@@ -165,6 +165,33 @@ var userSchema = new mongoose3.Schema(
         },
         message: (props) => `${props.value} is not a valid reason for locking the user account.`
       }
+    },
+    metadata: {
+      type: {
+        interests: [String],
+        prompts: [
+          {
+            question: String,
+            answer: String
+          }
+        ],
+        pronouns: String,
+        lifeSituation: String,
+        work: String,
+        education: String,
+        gender: String,
+        lookingFor: String,
+        sexuality: String,
+        relationshipStatus: String,
+        hasKids: Boolean,
+        religion: String,
+        smoking: Boolean,
+        drinking: Boolean,
+        newToArea: Boolean,
+        starSign: String,
+        pets: Boolean
+      },
+      required: false
     }
   },
   { timestamps: true }

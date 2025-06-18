@@ -31,15 +31,42 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       validate: {
         validator: function (value: ReasonForLock) {
           //when locked, unlocked is not a valid reason
-          if(this.isLocked){
+          if (this.isLocked) {
             return value !== REASON_FOR_LOCK.UNLOCKED;
           }
-          //when not locked, unlocked is the only valid reason 
-          return value === REASON_FOR_LOCK.UNLOCKED 
+          //when not locked, unlocked is the only valid reason
+          return value === REASON_FOR_LOCK.UNLOCKED;
         },
         message: (props: any) =>
           `${props.value} is not a valid reason for locking the user account.`,
       },
+    },
+    metadata: {
+      type: {
+        interests: [String],
+        prompts: [
+          {
+            question: String,
+            answer: String,
+          },
+        ],
+        pronouns: String,
+        lifeSituation: String,
+        work: String,
+        education: String,
+        gender: String,
+        lookingFor: String,
+        sexuality: String,
+        relationshipStatus: String,
+        hasKids: Boolean,
+        religion: String,
+        smoking: Boolean,
+        drinking: Boolean,
+        newToArea: Boolean,
+        starSign: String,
+        pets: Boolean,
+      },
+      required: false,
     },
   },
   { timestamps: true }

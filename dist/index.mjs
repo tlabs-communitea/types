@@ -165,6 +165,36 @@ var userSchema = new mongoose3.Schema(
         },
         message: (props) => `${props.value} is not a valid reason for locking the user account.`
       }
+    },
+    metadata: {
+      type: {
+        interests: { type: [String], default: [] },
+        prompts: {
+          type: [
+            {
+              question: { type: String },
+              answer: { type: String }
+            }
+          ],
+          default: []
+        },
+        pronouns: { type: String, default: "" },
+        lifeSituation: { type: String, default: "" },
+        work: { type: String, default: "" },
+        education: { type: String, default: "" },
+        gender: { type: String, default: "" },
+        lookingFor: { type: String, default: "" },
+        sexuality: { type: String, default: "" },
+        relationshipStatus: { type: String, default: "" },
+        hasKids: { type: Boolean, default: null },
+        religion: { type: String, default: "" },
+        smoking: { type: Boolean, default: null },
+        drinking: { type: Boolean, default: null },
+        newToArea: { type: Boolean, default: null },
+        starSign: { type: String, default: "" },
+        pets: { type: Boolean, default: null }
+      },
+      required: false
     }
   },
   { timestamps: true }
@@ -440,6 +470,25 @@ var userTransformToDTO = (user) => {
   };
   return transformedUser;
 };
+var defaultUserMetadata = () => ({
+  interests: [],
+  prompts: [],
+  pronouns: "",
+  lifeSituation: "",
+  work: "",
+  education: "",
+  gender: "",
+  lookingFor: "",
+  sexuality: "",
+  relationshipStatus: "",
+  hasKids: null,
+  religion: "",
+  smoking: null,
+  drinking: null,
+  newToArea: null,
+  starSign: "",
+  pets: null
+});
 var userTransformToPublicDTO = (user) => {
   return {
     id: user._id.toString(),
@@ -449,10 +498,11 @@ var userTransformToPublicDTO = (user) => {
     avatar: user.avatar || null,
     description: user.description || null,
     organizationId: user.organizationId.toString(),
-    role: user.role
+    role: user.role,
     // Optionally include createdAt and updatedAt if useful for display
     // createdAt: user.createdAt.toISOString(),
     // updatedAt: user.updatedAt.toISOString(),
+    metadata: user.metadata || defaultUserMetadata()
   };
 };
 

@@ -94,6 +94,30 @@ declare const REASON_FOR_LOCK: {
 };
 type ReasonForLock = typeof REASON_FOR_LOCK[keyof typeof REASON_FOR_LOCK];
 type Role = typeof ROLES[keyof typeof ROLES];
+interface PromptAnswer {
+    question: string;
+    answer: string;
+}
+type Nullable<T> = T | null;
+interface UserMetadata {
+    interests: string[];
+    prompts: PromptAnswer[];
+    pronouns: string;
+    lifeSituation: string;
+    work: string;
+    education: string;
+    gender: string;
+    lookingFor: string;
+    sexuality: string;
+    relationshipStatus: string;
+    hasKids: Nullable<boolean>;
+    religion: string;
+    smoking: Nullable<boolean>;
+    drinking: Nullable<boolean>;
+    newToArea: Nullable<boolean>;
+    starSign: string;
+    pets: Nullable<boolean>;
+}
 interface IUser {
     name: string;
     email: string;
@@ -109,6 +133,7 @@ interface IUser {
     createdAt: Date;
     updatedAt: Date;
     reasonForLock: ReasonForLock;
+    metadata?: UserMetadata;
 }
 interface IUserDocument extends IUser, Document {
 }
@@ -139,6 +164,7 @@ interface PublicUserDTO {
     description: string | null;
     organizationId: string;
     role: Role;
+    metadata: UserMetadata;
 }
 
 declare const userSchema: mongoose.Schema<IUserDocument, mongoose.Model<IUserDocument, any, any, any, mongoose.Document<unknown, any, IUserDocument, any> & IUserDocument & Required<{
@@ -440,4 +466,4 @@ interface FailureResponse {
     error: string;
 }
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type OrganizationDTO, type PublicUserDTO, PushTokenModel, REASON_FOR_LOCK, ROLES, type ReasonForLock, type Role, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type Nullable, type OrganizationDTO, type PromptAnswer, type PublicUserDTO, PushTokenModel, REASON_FOR_LOCK, ROLES, type ReasonForLock, type Role, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserMetadata, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

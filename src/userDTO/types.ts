@@ -14,6 +14,37 @@ export const REASON_FOR_LOCK = {
 export type ReasonForLock = typeof REASON_FOR_LOCK[keyof typeof REASON_FOR_LOCK];
 export type Role = typeof ROLES[keyof typeof ROLES];
 
+export interface PromptAnswer {
+  question: string;
+  answer: string;
+}
+
+export type Nullable<T> = T | null;
+
+export interface UserMetadata {
+  interests: string[];
+  prompts: PromptAnswer[];
+
+  pronouns: string;
+
+  lifeSituation: string;
+
+  work: string;
+  education: string;
+  gender: string;
+  lookingFor: string;
+
+  sexuality: string;
+  relationshipStatus: string;
+  hasKids: Nullable<boolean>;
+  religion: string;
+  smoking: Nullable<boolean>;
+  drinking: Nullable<boolean>;
+  newToArea: Nullable<boolean>;
+  starSign: string;
+  pets: Nullable<boolean>;
+}
+
 // This interface represents the shape of the User document in MongoDB
 export interface IUser {
   name: string;
@@ -30,6 +61,8 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   reasonForLock: ReasonForLock;
+
+  metadata?: UserMetadata;
 }
 
 // This interface includes Mongoose Document properties like _id, and methods.
@@ -69,4 +102,5 @@ export interface PublicUserDTO {
   description: string | null;
   organizationId: string;
   role: Role;
+  metadata: UserMetadata;
 }

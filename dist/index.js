@@ -226,28 +226,31 @@ var userSchema = new import_mongoose3.default.Schema(
     },
     metadata: {
       type: {
-        interests: [String],
-        prompts: [
-          {
-            question: String,
-            answer: String
-          }
-        ],
-        pronouns: String,
-        lifeSituation: String,
-        work: String,
-        education: String,
-        gender: String,
-        lookingFor: String,
-        sexuality: String,
-        relationshipStatus: String,
-        hasKids: Boolean,
-        religion: String,
-        smoking: Boolean,
-        drinking: Boolean,
-        newToArea: Boolean,
-        starSign: String,
-        pets: Boolean
+        interests: { type: [String], default: [] },
+        prompts: {
+          type: [
+            {
+              question: { type: String },
+              answer: { type: String }
+            }
+          ],
+          default: []
+        },
+        pronouns: { type: String, default: "" },
+        lifeSituation: { type: String, default: "" },
+        work: { type: String, default: "" },
+        education: { type: String, default: "" },
+        gender: { type: String, default: "" },
+        lookingFor: { type: String, default: "" },
+        sexuality: { type: String, default: "" },
+        relationshipStatus: { type: String, default: "" },
+        hasKids: { type: Boolean, default: null },
+        religion: { type: String, default: "" },
+        smoking: { type: Boolean, default: null },
+        drinking: { type: Boolean, default: null },
+        newToArea: { type: Boolean, default: null },
+        starSign: { type: String, default: "" },
+        pets: { type: Boolean, default: null }
       },
       required: false
     }

@@ -2,6 +2,12 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 import { IMessageDocument, MessageMetadata } from '../messagesDTO/types';
 
+export const FlagSchema = new mongoose.Schema({
+  flaggedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  reason: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
 export const MessageMetadataSchema = new Schema<MessageMetadata>(
   {
     userFlaggedBy: {
@@ -14,6 +20,7 @@ export const MessageMetadataSchema = new Schema<MessageMetadata>(
       ref: 'User',
       default: [],
     },
+    userFlags: [FlagSchema],
   },
   { _id: false }
 );
@@ -66,7 +73,7 @@ const MessageSchema = new Schema<IMessageDocument>(
     },
     metadata: {
       type: MessageMetadataSchema,
-      default: {},
+      default: () => ({ userFlaggedBy: [], adminFlaggedBy: [] })
     },
   },
   { timestamps: true } //auto handle timestamps
@@ -74,7 +81,7 @@ const MessageSchema = new Schema<IMessageDocument>(
 
 // Custom validation to ensure either conversationId or channelId is provided
 MessageSchema.pre('validate', function (next) {
-  if (!this.conversationId ) {
+  if (!this.conversationId) {
     next(new Error('ConversationId must be provided.'));
   } else {
     next();

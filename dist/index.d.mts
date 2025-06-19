@@ -24,6 +24,24 @@ declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any
     __v: number;
 }>;
 
+declare const REASON_FOR_FLAG: {
+    readonly SPAM: "Spam or Unsolicited";
+    readonly INAPPROPRIATE: "Inappropriate Content";
+    readonly HARASSMENT: "Harassment or Bullying";
+    readonly MISINFORMATION: "Misinformation or False Information";
+    readonly OTHER: "Other";
+};
+type ReasonForFlag = typeof REASON_FOR_FLAG[keyof typeof REASON_FOR_FLAG];
+interface Flag {
+    flaggedBy: Types.ObjectId;
+    reason: ReasonForFlag;
+    createdAt: Date;
+}
+interface FlagDTO {
+    flaggedBy: string;
+    reason: ReasonForFlag;
+    createdAt: string;
+}
 interface IMessage {
     conversationId?: Types.ObjectId;
     userId: Types.ObjectId;
@@ -44,8 +62,10 @@ type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes$3>;
 interface MessageMetadata {
     userFlaggedBy?: Types.ObjectId[];
     adminFlaggedBy?: Types.ObjectId[];
+    userFlags?: Flag[];
 }
 interface MessageMetadataDTO {
+    userFlags: FlagDTO[];
     userFlaggedBy: string[];
     adminFlaggedBy: string[];
 }
@@ -64,6 +84,23 @@ interface MessageDTO {
     replies: MessageDTO[];
 }
 
+declare const FlagSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
+    createdAt: NativeDate;
+    flaggedBy: any;
+    reason: string;
+}, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
+    createdAt: NativeDate;
+    flaggedBy: any;
+    reason: string;
+}>, {}> & mongoose.FlatRecord<{
+    createdAt: NativeDate;
+    flaggedBy: any;
+    reason: string;
+}> & {
+    _id: Types.ObjectId;
+} & {
+    __v: number;
+}>;
 declare const MessageMetadataSchema: mongoose.Schema<MessageMetadata, mongoose.Model<MessageMetadata, any, any, any, mongoose.Document<unknown, any, MessageMetadata, any> & MessageMetadata & {
     _id: Types.ObjectId;
 } & {
@@ -440,4 +477,4 @@ interface FailureResponse {
     error: string;
 }
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type OrganizationDTO, type PublicUserDTO, PushTokenModel, REASON_FOR_LOCK, ROLES, type ReasonForLock, type Role, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type Flag, type FlagDTO, FlagSchema, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type OrganizationDTO, type PublicUserDTO, PushTokenModel, REASON_FOR_FLAG, REASON_FOR_LOCK, ROLES, type ReasonForFlag, type ReasonForLock, type Role, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

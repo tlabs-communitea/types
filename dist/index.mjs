@@ -29,7 +29,12 @@ var MessageHistorySchema = new mongoose.Schema(
 var MessageHistory_default = MessageHistorySchema;
 
 // src/types/Message.ts
-import { Schema as Schema2 } from "mongoose";
+import mongoose2, { Schema as Schema2 } from "mongoose";
+var FlagSchema = new mongoose2.Schema({
+  flaggedBy: { type: mongoose2.Schema.Types.ObjectId, ref: "User", required: true },
+  reason: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
 var MessageMetadataSchema = new Schema2(
   {
     userFlaggedBy: {
@@ -41,7 +46,8 @@ var MessageMetadataSchema = new Schema2(
       type: [Schema2.Types.ObjectId],
       ref: "User",
       default: []
-    }
+    },
+    userFlags: [FlagSchema]
   },
   { _id: false }
 );
@@ -93,7 +99,7 @@ var MessageSchema = new Schema2(
     },
     metadata: {
       type: MessageMetadataSchema,
-      default: {}
+      default: () => ({ userFlaggedBy: [], adminFlaggedBy: [] })
     }
   },
   { timestamps: true }
@@ -369,7 +375,12 @@ var transformToMessageDTO = (message) => {
       userFlaggedBy: mapObjectIdsToStrings(message.metadata.userFlaggedBy),
       adminFlaggedBy: mapObjectIdsToStrings(
         message.metadata.adminFlaggedBy
-      )
+      ),
+      userFlags: message.metadata.userFlags ? message.metadata.userFlags.map((flag) => ({
+        flaggedBy: flag.flaggedBy.toString(),
+        reason: flag.reason,
+        createdAt: flag.createdAt.toISOString()
+      })) : []
     } : null,
     // Use metadataDTO eventually
     conversationId: message.conversationId ? message.conversationId.toString() : null,
@@ -384,6 +395,15 @@ var transformToMessageDTO = (message) => {
     replies: flattened_replies
   };
   return flattened_msg;
+};
+
+// src/messagesDTO/types.ts
+var REASON_FOR_FLAG = {
+  SPAM: "Spam or Unsolicited",
+  INAPPROPRIATE: "Inappropriate Content",
+  HARASSMENT: "Harassment or Bullying",
+  MISINFORMATION: "Misinformation or False Information",
+  OTHER: "Other"
 };
 
 // src/conversationDTO/ConversationTransform.ts
@@ -511,12 +531,14 @@ var DirectMessage_default = DirectMessageSchema;
 export {
   ConversationMetadataSchema,
   DirectMessage_default as DirectMessageSchema,
+  FlagSchema,
   MessageHistory_default as MessageHistorySchema,
   MessageMetadataSchema,
   NOTIFICATION_STATUS,
   NOTIFICATION_TYPE,
   NotificationModel,
   PushTokenModel,
+  REASON_FOR_FLAG,
   REASON_FOR_LOCK,
   ROLES,
   TYPE_OF_CHANNEL,

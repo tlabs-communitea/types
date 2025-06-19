@@ -28,6 +28,13 @@ export const transformToMessageDTO = (message: IMessageDocument): MessageDTO => 
         adminFlaggedBy: mapObjectIdsToStrings(
           message.metadata.adminFlaggedBy
         ),
+        userFlags: message.metadata.userFlags
+          ? message.metadata.userFlags.map((flag) => ({
+            flaggedBy: flag.flaggedBy.toString(),
+            reason: flag.reason,
+            createdAt: flag.createdAt.toISOString(),
+          }))
+          : [],
       }
       : null, // Use metadataDTO eventually
     conversationId: message.conversationId

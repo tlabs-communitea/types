@@ -1,6 +1,27 @@
 import { Types } from 'mongoose';
 import { Document } from 'mongoose';
 
+
+export const REASON_FOR_FLAG = {
+  SPAM: 'Spam or Unsolicited',
+  INAPPROPRIATE: 'Inappropriate Content',
+  HARASSMENT: 'Harassment or Bullying',
+  MISINFORMATION: 'Misinformation or False Information',
+  OTHER: 'Other',
+} as const;
+
+export type ReasonForFlag = typeof REASON_FOR_FLAG[keyof typeof REASON_FOR_FLAG];
+export interface Flag {
+  flaggedBy: Types.ObjectId;
+  reason: ReasonForFlag;
+  createdAt: Date;
+}
+export interface FlagDTO {
+  flaggedBy: string;
+  reason: ReasonForFlag;
+  createdAt: string;
+}
+
 export interface IMessage {
   conversationId?: Types.ObjectId;
   userId: Types.ObjectId;
@@ -16,7 +37,7 @@ export interface IMessage {
   metadata: MessageMetadata;
 }
 
-export interface IMessageDocument extends Document, IMessage {}
+export interface IMessageDocument extends Document, IMessage { }
 
 type MongooseSpecificTypes = keyof Document;
 export type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes>;
@@ -24,6 +45,7 @@ export type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes>;
 export interface MessageMetadata {
   userFlaggedBy?: Types.ObjectId[];
   adminFlaggedBy?: Types.ObjectId[];
+  userFlags?: Flag[];
 }
 
 // -----------------
@@ -31,6 +53,7 @@ export interface MessageMetadata {
 
 //metadata
 export interface MessageMetadataDTO {
+  userFlags: FlagDTO[];
   userFlaggedBy: string[];
   adminFlaggedBy: string[];
 }

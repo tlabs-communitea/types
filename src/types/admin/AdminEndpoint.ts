@@ -1,5 +1,5 @@
 import { Role } from "../../userDTO/types";
-
+import { ReasonForLock } from "../../userDTO/types";
 export interface UserWithoutSensitiveInfo {
     id: string;
     name: string;
@@ -11,6 +11,7 @@ export interface UserWithoutSensitiveInfo {
     description: string | null;
     createdAt: string;
     updatedAt: string;
+    reasonForLock: ReasonForLock
 }
 
 export type CountPerDate = Record<string,number>

@@ -44,10 +44,12 @@ type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes$3>;
 interface MessageMetadata {
     userFlaggedBy?: Types.ObjectId[];
     adminFlaggedBy?: Types.ObjectId[];
+    mentionedUsers?: Types.ObjectId[];
 }
 interface MessageMetadataDTO {
     userFlaggedBy: string[];
     adminFlaggedBy: string[];
+    mentionedUsers: string[];
 }
 interface MessageDTO {
     id: string;
@@ -420,6 +422,7 @@ interface UserWithoutSensitiveInfo {
     description: string | null;
     createdAt: string;
     updatedAt: string;
+    reasonForLock: ReasonForLock;
 }
 type CountPerDate = Record<string, number>;
 interface MostActiveConversation {

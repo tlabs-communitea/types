@@ -14,6 +14,11 @@ export const MessageMetadataSchema = new Schema<MessageMetadata>(
       ref: 'User',
       default: [],
     },
+    mentionedUsers: {
+      type: [Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
+    },
   },
   { _id: false }
 );
@@ -74,7 +79,7 @@ const MessageSchema = new Schema<IMessageDocument>(
 
 // Custom validation to ensure either conversationId or channelId is provided
 MessageSchema.pre('validate', function (next) {
-  if (!this.conversationId ) {
+  if (!this.conversationId) {
     next(new Error('ConversationId must be provided.'));
   } else {
     next();

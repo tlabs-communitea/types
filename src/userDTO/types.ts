@@ -11,8 +11,41 @@ export const REASON_FOR_LOCK = {
   UNLOCKED: 'unlocked',
 } as const;
 
+export const GENDER = {
+  MALE: 'male',
+  FEMALE: 'female',
+  NON_BINARY: 'non-binary',
+  OTHER: 'other',
+  PREFER_NOT_TO_SAY: 'prefer not to say'
+} as const;
+
+export const SEXUALITY = {
+  STRAIGHT: 'straight',
+  GAY: 'gay',
+  LESBIAN: 'lesbian',
+  BISEXUAL: 'bisexual',
+  PANSEXUAL: 'pansexual',
+  ASEXUAL: 'asexual',
+  QUEER: 'queer',
+  OTHER: 'other',
+  PREFER_NOT_TO_SAY: 'prefer not to say'
+} as const;
+
+export const RELATIONSHIP_STATUS = {
+  SINGLE: 'single',
+  IN_A_RELATIONSHIP: 'in a relationship',
+  MARRIED: 'married',
+  DIVORCED: 'divorced',
+  WIDOWED: 'widowed',
+  COMPLICATED: "it's complicated",
+  PREFER_NOT_TO_SAY: 'prefer not to say'
+} as const;
+
 export type ReasonForLock = typeof REASON_FOR_LOCK[keyof typeof REASON_FOR_LOCK];
 export type Role = typeof ROLES[keyof typeof ROLES];
+export type Gender = typeof GENDER[keyof typeof GENDER];
+export type Sexuality = typeof SEXUALITY[keyof typeof SEXUALITY];
+export type RelationshipStatus = typeof RELATIONSHIP_STATUS[keyof typeof RELATIONSHIP_STATUS];
 
 export interface PromptAnswer {
   question: string;
@@ -31,11 +64,11 @@ export interface UserMetadata {
 
   work: string;
   education: string;
-  gender: string;
+  gender: Gender;
   lookingFor: string;
 
-  sexuality: string;
-  relationshipStatus: string;
+  sexuality: Sexuality;
+  relationshipStatus: RelationshipStatus;
   hasKids: Nullable<boolean>;
   religion: string;
   smoking: Nullable<boolean>;
@@ -92,6 +125,7 @@ export interface UserDTO {
   createdAt: string;
   updatedAt: string;
   reasonForLock: ReasonForLock;
+  metadata: UserMetadata;
 }
 
 export interface PublicUserDTO {

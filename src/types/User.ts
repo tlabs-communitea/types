@@ -4,6 +4,9 @@ import {
   REASON_FOR_LOCK,
   ReasonForLock,
   ROLES,
+  GENDER,
+  SEXUALITY,
+  RELATIONSHIP_STATUS,
 } from '../userDTO/types';
 
 const userSchema = new mongoose.Schema<IUserDocument>(
@@ -57,10 +60,10 @@ const userSchema = new mongoose.Schema<IUserDocument>(
         lifeSituation: { type: String, default: '' },
         work: { type: String, default: '' },
         education: { type: String, default: '' },
-        gender: { type: String, default: '' },
+        gender: { type: String, enum: Object.values(GENDER), default: '' },
         lookingFor: { type: String, default: '' },
-        sexuality: { type: String, default: '' },
-        relationshipStatus: { type: String, default: '' },
+        sexuality: { type: String, enum: Object.values(SEXUALITY), default: '' },
+        relationshipStatus: { type: String, enum: Object.values(RELATIONSHIP_STATUS), default: '' },
         hasKids: { type: Boolean, default: null },
         religion: { type: String, default: '' },
         smoking: { type: Boolean, default: null },

@@ -1,6 +1,30 @@
 import { IUserDocument, UserDTO, PublicUserDTO, REASON_FOR_LOCK, UserMetadata } from "./types";
 import { Types } from "mongoose";
 
+const defaultUserMetadata = (): UserMetadata => ({
+    interests: [],
+    prompts: [],
+
+    pronouns: "",
+
+    lifeSituation: "",
+
+    work: "",
+    education: "",
+    gender: "",
+    lookingFor: "",
+
+    sexuality: "",
+    relationshipStatus: "",
+    hasKids: null,
+    religion: "",
+    smoking: null,
+    drinking: null,
+    newToArea: null,
+    starSign: "",
+    pets: null,
+})    
+
 /**
  * Transforms a user document into a DTO format.
  * @param user - The user document to transform.
@@ -26,33 +50,11 @@ export const userTransformToDTO = (user: IUserDocument): UserDTO => {
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
         reasonForLock: user.reasonForLock || REASON_FOR_LOCK.UNLOCKED,
+        metadata: user.metadata || defaultUserMetadata(),
     }
     return transformedUser;
 }
 
-const defaultUserMetadata = (): UserMetadata => ({
-    interests: [],
-    prompts: [],
-
-    pronouns: "",
-
-    lifeSituation: "",
-
-    work: "",
-    education: "",
-    gender: "",
-    lookingFor: "",
-
-    sexuality: "",
-    relationshipStatus: "",
-    hasKids: null,
-    religion: "",
-    smoking: null,
-    drinking: null,
-    newToArea: null,
-    starSign: "",
-    pets: null,
-})    
 
 /**
  * Transforms a user document into a public DTO format, exposing only necessary fields.

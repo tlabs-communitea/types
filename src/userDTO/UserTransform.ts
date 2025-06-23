@@ -11,11 +11,11 @@ const defaultUserMetadata = (): UserMetadata => ({
 
     work: "",
     education: "",
-    gender: "",
+    gender: null,
     lookingFor: "",
 
-    sexuality: "",
-    relationshipStatus: "",
+    sexuality: null,
+    relationshipStatus: null,
     hasKids: null,
     religion: "",
     smoking: null,

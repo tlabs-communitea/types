@@ -136,6 +136,33 @@ var REASON_FOR_LOCK = {
   ADMIN_LOCK: "admin lock",
   UNLOCKED: "unlocked"
 };
+var GENDER = {
+  MALE: "male",
+  FEMALE: "female",
+  NON_BINARY: "non-binary",
+  OTHER: "other",
+  PREFER_NOT_TO_SAY: "prefer not to say"
+};
+var SEXUALITY = {
+  STRAIGHT: "straight",
+  GAY: "gay",
+  LESBIAN: "lesbian",
+  BISEXUAL: "bisexual",
+  PANSEXUAL: "pansexual",
+  ASEXUAL: "asexual",
+  QUEER: "queer",
+  OTHER: "other",
+  PREFER_NOT_TO_SAY: "prefer not to say"
+};
+var RELATIONSHIP_STATUS = {
+  SINGLE: "single",
+  IN_A_RELATIONSHIP: "in a relationship",
+  MARRIED: "married",
+  DIVORCED: "divorced",
+  WIDOWED: "widowed",
+  COMPLICATED: "it's complicated",
+  PREFER_NOT_TO_SAY: "prefer not to say"
+};
 
 // src/types/User.ts
 var userSchema = new mongoose3.Schema(
@@ -187,10 +214,10 @@ var userSchema = new mongoose3.Schema(
         lifeSituation: { type: String, default: "" },
         work: { type: String, default: "" },
         education: { type: String, default: "" },
-        gender: { type: String, default: "" },
+        gender: { type: String, enum: Object.values(GENDER), default: "" },
         lookingFor: { type: String, default: "" },
-        sexuality: { type: String, default: "" },
-        relationshipStatus: { type: String, default: "" },
+        sexuality: { type: String, enum: Object.values(SEXUALITY), default: "" },
+        relationshipStatus: { type: String, enum: Object.values(RELATIONSHIP_STATUS), default: "" },
         hasKids: { type: Boolean, default: null },
         religion: { type: String, default: "" },
         smoking: { type: Boolean, default: null },
@@ -458,6 +485,25 @@ var transformToOrganizationDTO = (organization) => {
 };
 
 // src/userDTO/UserTransform.ts
+var defaultUserMetadata = () => ({
+  interests: [],
+  prompts: [],
+  pronouns: "",
+  lifeSituation: "",
+  work: "",
+  education: "",
+  gender: null,
+  lookingFor: "",
+  sexuality: null,
+  relationshipStatus: null,
+  hasKids: null,
+  religion: "",
+  smoking: null,
+  drinking: null,
+  newToArea: null,
+  starSign: "",
+  pets: null
+});
 var userTransformToDTO = (user) => {
   const transformedUser = {
     id: user._id.toString(),
@@ -474,29 +520,11 @@ var userTransformToDTO = (user) => {
     isLocked: user.isLocked,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
-    reasonForLock: user.reasonForLock || REASON_FOR_LOCK.UNLOCKED
+    reasonForLock: user.reasonForLock || REASON_FOR_LOCK.UNLOCKED,
+    metadata: user.metadata || defaultUserMetadata()
   };
   return transformedUser;
 };
-var defaultUserMetadata = () => ({
-  interests: [],
-  prompts: [],
-  pronouns: "",
-  lifeSituation: "",
-  work: "",
-  education: "",
-  gender: "",
-  lookingFor: "",
-  sexuality: "",
-  relationshipStatus: "",
-  hasKids: null,
-  religion: "",
-  smoking: null,
-  drinking: null,
-  newToArea: null,
-  starSign: "",
-  pets: null
-});
 var userTransformToPublicDTO = (user) => {
   return {
     id: user._id.toString(),
@@ -569,6 +597,7 @@ var DirectMessage_default = DirectMessageSchema;
 export {
   ConversationMetadataSchema,
   DirectMessage_default as DirectMessageSchema,
+  GENDER,
   MessageHistory_default as MessageHistorySchema,
   MessageMetadataSchema,
   NOTIFICATION_STATUS,
@@ -576,7 +605,9 @@ export {
   NotificationModel,
   PushTokenModel,
   REASON_FOR_LOCK,
+  RELATIONSHIP_STATUS,
   ROLES,
+  SEXUALITY,
   TYPE_OF_CHANNEL,
   Conversation_default as conversationSchema,
   conversationTransformToDTO,

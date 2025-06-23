@@ -64,11 +64,11 @@ export interface UserMetadata {
 
   work: string;
   education: string;
-  gender: Gender;
+  gender: Nullable<Sexuality>;
   lookingFor: string;
 
-  sexuality: Sexuality;
-  relationshipStatus: RelationshipStatus;
+  sexuality: Nullable<Sexuality>;
+  relationshipStatus: Nullable<RelationshipStatus>;
   hasKids: Nullable<boolean>;
   religion: string;
   smoking: Nullable<boolean>;

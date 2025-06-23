@@ -94,8 +94,62 @@ declare const REASON_FOR_LOCK: {
     readonly ADMIN_LOCK: "admin lock";
     readonly UNLOCKED: "unlocked";
 };
+declare const GENDER: {
+    readonly MALE: "male";
+    readonly FEMALE: "female";
+    readonly NON_BINARY: "non-binary";
+    readonly OTHER: "other";
+    readonly PREFER_NOT_TO_SAY: "prefer not to say";
+};
+declare const SEXUALITY: {
+    readonly STRAIGHT: "straight";
+    readonly GAY: "gay";
+    readonly LESBIAN: "lesbian";
+    readonly BISEXUAL: "bisexual";
+    readonly PANSEXUAL: "pansexual";
+    readonly ASEXUAL: "asexual";
+    readonly QUEER: "queer";
+    readonly OTHER: "other";
+    readonly PREFER_NOT_TO_SAY: "prefer not to say";
+};
+declare const RELATIONSHIP_STATUS: {
+    readonly SINGLE: "single";
+    readonly IN_A_RELATIONSHIP: "in a relationship";
+    readonly MARRIED: "married";
+    readonly DIVORCED: "divorced";
+    readonly WIDOWED: "widowed";
+    readonly COMPLICATED: "it's complicated";
+    readonly PREFER_NOT_TO_SAY: "prefer not to say";
+};
 type ReasonForLock = typeof REASON_FOR_LOCK[keyof typeof REASON_FOR_LOCK];
 type Role = typeof ROLES[keyof typeof ROLES];
+type Gender = typeof GENDER[keyof typeof GENDER];
+type Sexuality = typeof SEXUALITY[keyof typeof SEXUALITY];
+type RelationshipStatus = typeof RELATIONSHIP_STATUS[keyof typeof RELATIONSHIP_STATUS];
+interface PromptAnswer {
+    question: string;
+    answer: string;
+}
+type Nullable<T> = T | null;
+interface UserMetadata {
+    interests: string[];
+    prompts: PromptAnswer[];
+    pronouns: string;
+    lifeSituation: string;
+    work: string;
+    education: string;
+    gender: Nullable<Sexuality>;
+    lookingFor: string;
+    sexuality: Nullable<Sexuality>;
+    relationshipStatus: Nullable<RelationshipStatus>;
+    hasKids: Nullable<boolean>;
+    religion: string;
+    smoking: Nullable<boolean>;
+    drinking: Nullable<boolean>;
+    newToArea: Nullable<boolean>;
+    starSign: string;
+    pets: Nullable<boolean>;
+}
 interface IUser {
     name: string;
     email: string;
@@ -111,6 +165,7 @@ interface IUser {
     createdAt: Date;
     updatedAt: Date;
     reasonForLock: ReasonForLock;
+    metadata?: UserMetadata;
 }
 interface IUserDocument extends IUser, Document {
 }
@@ -132,6 +187,7 @@ interface UserDTO {
     createdAt: string;
     updatedAt: string;
     reasonForLock: ReasonForLock;
+    metadata: UserMetadata;
 }
 interface PublicUserDTO {
     id: string;
@@ -141,6 +197,7 @@ interface PublicUserDTO {
     description: string | null;
     organizationId: string;
     role: Role;
+    metadata: UserMetadata;
 }
 
 declare const userSchema: mongoose.Schema<IUserDocument, mongoose.Model<IUserDocument, any, any, any, mongoose.Document<unknown, any, IUserDocument, any> & IUserDocument & Required<{
@@ -442,4 +499,4 @@ interface FailureResponse {
     error: string;
 }
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type OrganizationDTO, type PublicUserDTO, PushTokenModel, REASON_FOR_LOCK, ROLES, type ReasonForLock, type Role, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, GENDER, type Gender, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type Nullable, type OrganizationDTO, type PromptAnswer, type PublicUserDTO, PushTokenModel, REASON_FOR_LOCK, RELATIONSHIP_STATUS, ROLES, type ReasonForLock, type RelationshipStatus, type Role, SEXUALITY, type Sexuality, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserMetadata, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

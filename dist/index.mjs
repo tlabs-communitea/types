@@ -41,6 +41,11 @@ var MessageMetadataSchema = new Schema2(
       type: [Schema2.Types.ObjectId],
       ref: "User",
       default: []
+    },
+    mentionedUsers: {
+      type: [Schema2.Types.ObjectId],
+      ref: "User",
+      default: []
     }
   },
   { _id: false }
@@ -399,6 +404,9 @@ var transformToMessageDTO = (message) => {
       userFlaggedBy: mapObjectIdsToStrings(message.metadata.userFlaggedBy),
       adminFlaggedBy: mapObjectIdsToStrings(
         message.metadata.adminFlaggedBy
+      ),
+      mentionedUsers: mapObjectIdsToStrings(
+        message.metadata.mentionedUsers
       )
     } : null,
     // Use metadataDTO eventually

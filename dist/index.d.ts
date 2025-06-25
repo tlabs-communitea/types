@@ -121,6 +121,7 @@ declare const RELATIONSHIP_STATUS: {
     readonly COMPLICATED: "it's complicated";
     readonly PREFER_NOT_TO_SAY: "prefer not to say";
 };
+declare const defaultUserMetadata: () => UserMetadata;
 type ReasonForLock = typeof REASON_FOR_LOCK[keyof typeof REASON_FOR_LOCK];
 type Role = typeof ROLES[keyof typeof ROLES];
 type Gender = typeof GENDER[keyof typeof GENDER];
@@ -400,6 +401,38 @@ declare const pushTokenSchema: mongoose.Schema<IPushTokenDocument, mongoose.Mode
 }>;
 declare const PushTokenModel: Model<IPushTokenDocument>;
 
+declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
+    timestamps: true;
+}, {
+    createdAt: NativeDate;
+    updatedAt: NativeDate;
+} & {
+    conversationId: any;
+    content: string;
+    senderId: any;
+    likes: number;
+}, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
+    createdAt: NativeDate;
+    updatedAt: NativeDate;
+} & {
+    conversationId: any;
+    content: string;
+    senderId: any;
+    likes: number;
+}>, {}> & mongoose.FlatRecord<{
+    createdAt: NativeDate;
+    updatedAt: NativeDate;
+} & {
+    conversationId: any;
+    content: string;
+    senderId: any;
+    likes: number;
+}> & {
+    _id: mongoose.Types.ObjectId;
+} & {
+    __v: number;
+}>;
+
 /**
  * Converts a IMessage from the database to a DTO format for the frontend
  * @param message of type IMessage
@@ -436,38 +469,6 @@ declare const userTransformToPublicDTO: (user: IUserDocument) => PublicUserDTO;
 
 declare function transformToNotificationDTO(notification: INotificationDocument): NotificationDTO;
 
-declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
-    timestamps: true;
-}, {
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
-} & {
-    conversationId: any;
-    content: string;
-    senderId: any;
-    likes: number;
-}, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
-} & {
-    conversationId: any;
-    content: string;
-    senderId: any;
-    likes: number;
-}>, {}> & mongoose.FlatRecord<{
-    createdAt: NativeDate;
-    updatedAt: NativeDate;
-} & {
-    conversationId: any;
-    content: string;
-    senderId: any;
-    likes: number;
-}> & {
-    _id: mongoose.Types.ObjectId;
-} & {
-    __v: number;
-}>;
-
 interface UserWithoutSensitiveInfo {
     id: string;
     name: string;
@@ -499,4 +500,4 @@ interface FailureResponse {
     error: string;
 }
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, GENDER, type Gender, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type Nullable, type OrganizationDTO, type PromptAnswer, type PublicUserDTO, PushTokenModel, REASON_FOR_LOCK, RELATIONSHIP_STATUS, ROLES, type ReasonForLock, type RelationshipStatus, type Role, SEXUALITY, type Sexuality, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserMetadata, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, GENDER, type Gender, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type Nullable, type OrganizationDTO, type PromptAnswer, type PublicUserDTO, PushTokenModel, REASON_FOR_LOCK, RELATIONSHIP_STATUS, ROLES, type ReasonForLock, type RelationshipStatus, type Role, SEXUALITY, type Sexuality, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserMetadata, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, defaultUserMetadata, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

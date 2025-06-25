@@ -163,6 +163,25 @@ var RELATIONSHIP_STATUS = {
   COMPLICATED: "it's complicated",
   PREFER_NOT_TO_SAY: "prefer not to say"
 };
+var defaultUserMetadata = () => ({
+  interests: [],
+  prompts: [],
+  pronouns: "",
+  lifeSituation: "",
+  work: "",
+  education: "",
+  gender: null,
+  lookingFor: "",
+  sexuality: null,
+  relationshipStatus: null,
+  hasKids: null,
+  religion: "",
+  smoking: null,
+  drinking: null,
+  newToArea: null,
+  starSign: "",
+  pets: null
+});
 
 // src/types/User.ts
 var userSchema = new mongoose3.Schema(
@@ -416,6 +435,46 @@ var PushTokenModel = mongoose7.model(
   pushTokenSchema
 );
 
+// src/types/DirectMessage.ts
+import mongoose8 from "mongoose";
+var { Schema: Schema4 } = mongoose8;
+var DirectMessageSchema = new Schema4(
+  {
+    conversationId: {
+      type: Schema4.Types.ObjectId,
+      ref: "Conversation",
+      required: true
+    },
+    senderId: {
+      type: Schema4.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    likes: {
+      type: Number,
+      default: 0
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+DirectMessageSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function(doc, ret) {
+    ret.id = ret._id.toString();
+    delete ret._id;
+    delete ret.__v;
+  }
+});
+var DirectMessage_default = DirectMessageSchema;
+
 // src/messagesDTO/MessageTransform.ts
 function mapObjectIdsToStrings(ids) {
   return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
@@ -485,25 +544,6 @@ var transformToOrganizationDTO = (organization) => {
 };
 
 // src/userDTO/UserTransform.ts
-var defaultUserMetadata = () => ({
-  interests: [],
-  prompts: [],
-  pronouns: "",
-  lifeSituation: "",
-  work: "",
-  education: "",
-  gender: null,
-  lookingFor: "",
-  sexuality: null,
-  relationshipStatus: null,
-  hasKids: null,
-  religion: "",
-  smoking: null,
-  drinking: null,
-  newToArea: null,
-  starSign: "",
-  pets: null
-});
 var userTransformToDTO = (user) => {
   const transformedUser = {
     id: user._id.toString(),
@@ -554,46 +594,6 @@ function transformToNotificationDTO(notification) {
     createdAt: notification.createdAt.toISOString()
   };
 }
-
-// src/types/DirectMessage.ts
-import mongoose8 from "mongoose";
-var { Schema: Schema4 } = mongoose8;
-var DirectMessageSchema = new Schema4(
-  {
-    conversationId: {
-      type: Schema4.Types.ObjectId,
-      ref: "Conversation",
-      required: true
-    },
-    senderId: {
-      type: Schema4.Types.ObjectId,
-      ref: "User",
-      required: true
-    },
-    content: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    likes: {
-      type: Number,
-      default: 0
-    }
-  },
-  {
-    timestamps: true
-  }
-);
-DirectMessageSchema.set("toJSON", {
-  virtuals: true,
-  versionKey: false,
-  transform: function(doc, ret) {
-    ret.id = ret._id.toString();
-    delete ret._id;
-    delete ret.__v;
-  }
-});
-var DirectMessage_default = DirectMessageSchema;
 export {
   ConversationMetadataSchema,
   DirectMessage_default as DirectMessageSchema,
@@ -611,6 +611,7 @@ export {
   TYPE_OF_CHANNEL,
   Conversation_default as conversationSchema,
   conversationTransformToDTO,
+  defaultUserMetadata,
   Message_default as messageSchema,
   notificationSchema,
   Organization_default as organizationSchema,

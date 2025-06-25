@@ -41,6 +41,30 @@ export const RELATIONSHIP_STATUS = {
   PREFER_NOT_TO_SAY: 'prefer not to say'
 } as const;
 
+export const defaultUserMetadata = (): UserMetadata => ({
+  interests: [],
+  prompts: [],
+
+  pronouns: "",
+
+  lifeSituation: "",
+
+  work: "",
+  education: "",
+  gender: null,
+  lookingFor: "",
+
+  sexuality: null,
+  relationshipStatus: null,
+  hasKids: null,
+  religion: "",
+  smoking: null,
+  drinking: null,
+  newToArea: null,
+  starSign: "",
+  pets: null,
+});
+
 export type ReasonForLock = typeof REASON_FOR_LOCK[keyof typeof REASON_FOR_LOCK];
 export type Role = typeof ROLES[keyof typeof ROLES];
 export type Gender = typeof GENDER[keyof typeof GENDER];

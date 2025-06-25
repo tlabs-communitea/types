@@ -14,6 +14,8 @@ export {default as organizationSchema} from './types/Organization';
 export {default as MessageHistorySchema} from './types/MessageHistory';
 export {default as conversationSchema} from './types/Conversation';
 export {default as messageSchema} from './types/Message';
+//CHORE: redundent export, not used type, will remove this later
+export { default as DirectMessageSchema } from './types/DirectMessage';
 
 //exporting DTO and related types for client and server 
 export * from "../src/messagesDTO/MessageTransform"
@@ -30,9 +32,6 @@ export * from "../src/userDTO/UserTransform"
 
 export * from "../src/notificationsDTO/types"
 export * from "../src/notificationsDTO/NotificationTransform"
-
-//CHORE: redundent export, not used type, will remove this later
-export {default as DirectMessageSchema} from './types/DirectMessage';
 
 //exporting from admin types
 export * from './types/admin/AdminEndpoint';

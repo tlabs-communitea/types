@@ -1,29 +1,5 @@
-import { IUserDocument, UserDTO, PublicUserDTO, REASON_FOR_LOCK, UserMetadata } from "./types";
+import { IUserDocument, UserDTO, PublicUserDTO, REASON_FOR_LOCK, UserMetadata, defaultUserMetadata } from "./types";
 import { Types } from "mongoose";
-
-const defaultUserMetadata = (): UserMetadata => ({
-    interests: [],
-    prompts: [],
-
-    pronouns: "",
-
-    lifeSituation: "",
-
-    work: "",
-    education: "",
-    gender: null,
-    lookingFor: "",
-
-    sexuality: null,
-    relationshipStatus: null,
-    hasKids: null,
-    religion: "",
-    smoking: null,
-    drinking: null,
-    newToArea: null,
-    starSign: "",
-    pets: null,
-})    
 
 /**
  * Transforms a user document into a DTO format.

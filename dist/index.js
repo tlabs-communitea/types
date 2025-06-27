@@ -33,6 +33,7 @@ __export(index_exports, {
   ConversationMetadataSchema: () => ConversationMetadataSchema,
   DirectMessageSchema: () => DirectMessage_default,
   FlagSchema: () => FlagSchema,
+  GENDER: () => GENDER,
   MessageHistorySchema: () => MessageHistory_default,
   MessageMetadataSchema: () => MessageMetadataSchema,
   NOTIFICATION_STATUS: () => NOTIFICATION_STATUS,
@@ -41,10 +42,13 @@ __export(index_exports, {
   PushTokenModel: () => PushTokenModel,
   REASON_FOR_FLAG: () => REASON_FOR_FLAG,
   REASON_FOR_LOCK: () => REASON_FOR_LOCK,
+  RELATIONSHIP_STATUS: () => RELATIONSHIP_STATUS,
   ROLES: () => ROLES,
+  SEXUALITY: () => SEXUALITY,
   TYPE_OF_CHANNEL: () => TYPE_OF_CHANNEL,
   conversationSchema: () => Conversation_default,
   conversationTransformToDTO: () => conversationTransformToDTO,
+  defaultUserMetadata: () => defaultUserMetadata,
   messageSchema: () => Message_default,
   notificationSchema: () => notificationSchema,
   organizationSchema: () => Organization_default,
@@ -107,7 +111,12 @@ var MessageMetadataSchema = new import_mongoose2.Schema(
       ref: "User",
       default: []
     },
-    userFlags: [FlagSchema]
+    userFlags: [FlagSchema],
+    mentionedUsers: {
+      type: [import_mongoose2.Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    }
   },
   { _id: false }
 );
@@ -197,6 +206,52 @@ var REASON_FOR_LOCK = {
   ADMIN_LOCK: "admin lock",
   UNLOCKED: "unlocked"
 };
+var GENDER = {
+  MALE: "male",
+  FEMALE: "female",
+  NON_BINARY: "non-binary",
+  OTHER: "other",
+  PREFER_NOT_TO_SAY: "prefer not to say"
+};
+var SEXUALITY = {
+  STRAIGHT: "straight",
+  GAY: "gay",
+  LESBIAN: "lesbian",
+  BISEXUAL: "bisexual",
+  PANSEXUAL: "pansexual",
+  ASEXUAL: "asexual",
+  QUEER: "queer",
+  OTHER: "other",
+  PREFER_NOT_TO_SAY: "prefer not to say"
+};
+var RELATIONSHIP_STATUS = {
+  SINGLE: "single",
+  IN_A_RELATIONSHIP: "in a relationship",
+  MARRIED: "married",
+  DIVORCED: "divorced",
+  WIDOWED: "widowed",
+  COMPLICATED: "it's complicated",
+  PREFER_NOT_TO_SAY: "prefer not to say"
+};
+var defaultUserMetadata = () => ({
+  interests: [],
+  prompts: [],
+  pronouns: "",
+  lifeSituation: "",
+  work: "",
+  education: "",
+  gender: null,
+  lookingFor: "",
+  sexuality: null,
+  relationshipStatus: null,
+  hasKids: null,
+  religion: "",
+  smoking: null,
+  drinking: null,
+  newToArea: null,
+  starSign: "",
+  pets: null
+});
 
 // src/types/User.ts
 var userSchema = new import_mongoose3.default.Schema(
@@ -231,6 +286,36 @@ var userSchema = new import_mongoose3.default.Schema(
         },
         message: (props) => `${props.value} is not a valid reason for locking the user account.`
       }
+    },
+    metadata: {
+      type: {
+        interests: { type: [String], default: [] },
+        prompts: {
+          type: [
+            {
+              question: { type: String },
+              answer: { type: String }
+            }
+          ],
+          default: []
+        },
+        pronouns: { type: String, default: "" },
+        lifeSituation: { type: String, default: "" },
+        work: { type: String, default: "" },
+        education: { type: String, default: "" },
+        gender: { type: String, enum: Object.values(GENDER), default: "" },
+        lookingFor: { type: String, default: "" },
+        sexuality: { type: String, enum: Object.values(SEXUALITY), default: "" },
+        relationshipStatus: { type: String, enum: Object.values(RELATIONSHIP_STATUS), default: "" },
+        hasKids: { type: Boolean, default: null },
+        religion: { type: String, default: "" },
+        smoking: { type: Boolean, default: null },
+        drinking: { type: Boolean, default: null },
+        newToArea: { type: Boolean, default: null },
+        starSign: { type: String, default: "" },
+        pets: { type: Boolean, default: null }
+      },
+      required: false
     }
   },
   { timestamps: true }
@@ -420,6 +505,46 @@ var PushTokenModel = import_mongoose7.default.model(
   pushTokenSchema
 );
 
+// src/types/DirectMessage.ts
+var import_mongoose8 = __toESM(require("mongoose"));
+var { Schema: Schema4 } = import_mongoose8.default;
+var DirectMessageSchema = new Schema4(
+  {
+    conversationId: {
+      type: Schema4.Types.ObjectId,
+      ref: "Conversation",
+      required: true
+    },
+    senderId: {
+      type: Schema4.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    likes: {
+      type: Number,
+      default: 0
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+DirectMessageSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function(doc, ret) {
+    ret.id = ret._id.toString();
+    delete ret._id;
+    delete ret.__v;
+  }
+});
+var DirectMessage_default = DirectMessageSchema;
+
 // src/messagesDTO/MessageTransform.ts
 function mapObjectIdsToStrings(ids) {
   return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
@@ -440,7 +565,10 @@ var transformToMessageDTO = (message) => {
         flaggedBy: flag.flaggedBy.toString(),
         reason: flag.reason,
         createdAt: flag.createdAt.toISOString()
-      })) : []
+      })) : [],
+      mentionedUsers: mapObjectIdsToStrings(
+        message.metadata.mentionedUsers
+      )
     } : null,
     // Use metadataDTO eventually
     conversationId: message.conversationId ? message.conversationId.toString() : null,
@@ -516,7 +644,8 @@ var userTransformToDTO = (user) => {
     isLocked: user.isLocked,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
-    reasonForLock: user.reasonForLock || REASON_FOR_LOCK.UNLOCKED
+    reasonForLock: user.reasonForLock || REASON_FOR_LOCK.UNLOCKED,
+    metadata: user.metadata || defaultUserMetadata()
   };
   return transformedUser;
 };
@@ -529,10 +658,11 @@ var userTransformToPublicDTO = (user) => {
     avatar: user.avatar || null,
     description: user.description || null,
     organizationId: user.organizationId.toString(),
-    role: user.role
+    role: user.role,
     // Optionally include createdAt and updatedAt if useful for display
     // createdAt: user.createdAt.toISOString(),
     // updatedAt: user.updatedAt.toISOString(),
+    metadata: user.metadata || defaultUserMetadata()
   };
 };
 
@@ -548,51 +678,12 @@ function transformToNotificationDTO(notification) {
     createdAt: notification.createdAt.toISOString()
   };
 }
-
-// src/types/DirectMessage.ts
-var import_mongoose8 = __toESM(require("mongoose"));
-var { Schema: Schema4 } = import_mongoose8.default;
-var DirectMessageSchema = new Schema4(
-  {
-    conversationId: {
-      type: Schema4.Types.ObjectId,
-      ref: "Conversation",
-      required: true
-    },
-    senderId: {
-      type: Schema4.Types.ObjectId,
-      ref: "User",
-      required: true
-    },
-    content: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    likes: {
-      type: Number,
-      default: 0
-    }
-  },
-  {
-    timestamps: true
-  }
-);
-DirectMessageSchema.set("toJSON", {
-  virtuals: true,
-  versionKey: false,
-  transform: function(doc, ret) {
-    ret.id = ret._id.toString();
-    delete ret._id;
-    delete ret.__v;
-  }
-});
-var DirectMessage_default = DirectMessageSchema;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   ConversationMetadataSchema,
   DirectMessageSchema,
   FlagSchema,
+  GENDER,
   MessageHistorySchema,
   MessageMetadataSchema,
   NOTIFICATION_STATUS,
@@ -601,10 +692,13 @@ var DirectMessage_default = DirectMessageSchema;
   PushTokenModel,
   REASON_FOR_FLAG,
   REASON_FOR_LOCK,
+  RELATIONSHIP_STATUS,
   ROLES,
+  SEXUALITY,
   TYPE_OF_CHANNEL,
   conversationSchema,
   conversationTransformToDTO,
+  defaultUserMetadata,
   messageSchema,
   notificationSchema,
   organizationSchema,

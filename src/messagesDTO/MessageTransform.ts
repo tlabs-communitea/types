@@ -35,6 +35,9 @@ export const transformToMessageDTO = (message: IMessageDocument): MessageDTO => 
             createdAt: flag.createdAt.toISOString(),
           }))
           : [],
+        mentionedUsers: mapObjectIdsToStrings(
+          message.metadata.mentionedUsers
+        ),
       }
       : null, // Use metadataDTO eventually
     conversationId: message.conversationId

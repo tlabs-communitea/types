@@ -1,4 +1,4 @@
-import { IUserDocument, UserDTO, PublicUserDTO, REASON_FOR_LOCK } from "./types";
+import { IUserDocument, UserDTO, PublicUserDTO, REASON_FOR_LOCK, UserMetadata, defaultUserMetadata } from "./types";
 import { Types } from "mongoose";
 
 /**
@@ -26,9 +26,11 @@ export const userTransformToDTO = (user: IUserDocument): UserDTO => {
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
         reasonForLock: user.reasonForLock || REASON_FOR_LOCK.UNLOCKED,
+        metadata: user.metadata || defaultUserMetadata(),
     }
     return transformedUser;
 }
+
 
 /**
  * Transforms a user document into a public DTO format, exposing only necessary fields.
@@ -47,5 +49,6 @@ export const userTransformToPublicDTO = (user: IUserDocument): PublicUserDTO => 
         // Optionally include createdAt and updatedAt if useful for display
         // createdAt: user.createdAt.toISOString(),
         // updatedAt: user.updatedAt.toISOString(),
+        metadata: user.metadata || defaultUserMetadata(),
     };
 };

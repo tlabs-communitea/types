@@ -4,6 +4,9 @@ import {
   REASON_FOR_LOCK,
   ReasonForLock,
   ROLES,
+  GENDER,
+  SEXUALITY,
+  RELATIONSHIP_STATUS,
 } from '../userDTO/types';
 
 const userSchema = new mongoose.Schema<IUserDocument>(
@@ -31,15 +34,45 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       validate: {
         validator: function (value: ReasonForLock) {
           //when locked, unlocked is not a valid reason
-          if(this.isLocked){
+          if (this.isLocked) {
             return value !== REASON_FOR_LOCK.UNLOCKED;
           }
-          //when not locked, unlocked is the only valid reason 
-          return value === REASON_FOR_LOCK.UNLOCKED 
+          //when not locked, unlocked is the only valid reason
+          return value === REASON_FOR_LOCK.UNLOCKED;
         },
         message: (props: any) =>
           `${props.value} is not a valid reason for locking the user account.`,
       },
+    },
+    metadata: {
+      type: {
+        interests: { type: [String], default: [] },
+        prompts: {
+          type: [
+            {
+              question: { type: String },
+              answer: { type: String },
+            },
+          ],
+          default: [],
+        },
+        pronouns: { type: String, default: '' },
+        lifeSituation: { type: String, default: '' },
+        work: { type: String, default: '' },
+        education: { type: String, default: '' },
+        gender: { type: String, enum: Object.values(GENDER), default: '' },
+        lookingFor: { type: String, default: '' },
+        sexuality: { type: String, enum: Object.values(SEXUALITY), default: '' },
+        relationshipStatus: { type: String, enum: Object.values(RELATIONSHIP_STATUS), default: '' },
+        hasKids: { type: Boolean, default: null },
+        religion: { type: String, default: '' },
+        smoking: { type: Boolean, default: null },
+        drinking: { type: Boolean, default: null },
+        newToArea: { type: Boolean, default: null },
+        starSign: { type: String, default: '' },
+        pets: { type: Boolean, default: null },
+      },
+      required: false,
     },
   },
   { timestamps: true }

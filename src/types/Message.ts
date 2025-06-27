@@ -21,6 +21,11 @@ export const MessageMetadataSchema = new Schema<MessageMetadata>(
       default: [],
     },
     userFlags: [FlagSchema],
+    mentionedUsers: {
+      type: [Schema.Types.ObjectId],
+      ref: 'User',
+      default: [],
+    },
   },
   { _id: false }
 );

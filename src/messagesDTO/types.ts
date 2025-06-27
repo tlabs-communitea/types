@@ -46,6 +46,7 @@ export interface MessageMetadata {
   userFlaggedBy?: Types.ObjectId[];
   adminFlaggedBy?: Types.ObjectId[];
   userFlags?: Flag[];
+  mentionedUsers?: Types.ObjectId[];
 }
 
 // -----------------
@@ -56,6 +57,7 @@ export interface MessageMetadataDTO {
   userFlags: FlagDTO[];
   userFlaggedBy: string[];
   adminFlaggedBy: string[];
+  mentionedUsers: string[];
 }
 
 //message

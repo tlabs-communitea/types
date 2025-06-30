@@ -123,10 +123,11 @@ if (message) {
 **Select**
 
 ```typescript
-type SelectedMessageFields = Pick<IMessage, '_id' | 'content'>;
+type SelectedMessageFields = Pick<IMessageDocument, '_id' | 'content'>;
 
 const message = await Message.findById(id)
-  .select<SelectedMessageFields>('_id content')
+  .select('_id content')
+  .lean<SelectedMessageFields>()
   .exec();
 
 // message: { _id: ObjectId; content: string }

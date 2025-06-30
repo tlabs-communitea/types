@@ -1,4 +1,4 @@
-import mongoose, { Document, Types, Model } from 'mongoose';
+import mongoose, { Types, Document, Model } from 'mongoose';
 
 declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
     messageId: any;
@@ -21,104 +21,6 @@ declare const MessageHistorySchema: mongoose.Schema<any, mongoose.Model<any, any
 }> & {
     _id: mongoose.Types.ObjectId;
 } & {
-    __v: number;
-}>;
-
-declare const REASON_FOR_FLAG: {
-    readonly SPAM: "Spam or Unsolicited";
-    readonly INAPPROPRIATE: "Inappropriate Content";
-    readonly HARASSMENT: "Harassment or Bullying";
-    readonly MISINFORMATION: "Misinformation or False Information";
-    readonly OTHER: "Other";
-};
-type ReasonForFlag = typeof REASON_FOR_FLAG[keyof typeof REASON_FOR_FLAG];
-interface Flag {
-    flaggedBy: Types.ObjectId;
-    reason: ReasonForFlag;
-    createdAt: Date;
-}
-interface FlagDTO {
-    flaggedBy: string;
-    reason: ReasonForFlag;
-    createdAt: string;
-}
-interface IMessage {
-    conversationId?: Types.ObjectId;
-    userId: Types.ObjectId;
-    content?: string;
-    fileUrl?: string;
-    fileName?: string;
-    createdAt: Date;
-    updatedAt: Date;
-    likedBy: Types.ObjectId[];
-    parentMessageId?: Types.ObjectId;
-    replies?: IMessageDocument[];
-    metadata: MessageMetadata;
-}
-interface IMessageDocument extends Document, IMessage {
-}
-type MongooseSpecificTypes$3 = keyof Document;
-type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes$3>;
-interface MessageMetadata {
-    userFlaggedBy?: Types.ObjectId[];
-    adminFlaggedBy?: Types.ObjectId[];
-    userFlags?: Flag[];
-    mentionedUsers?: Types.ObjectId[];
-}
-interface MessageMetadataDTO {
-    userFlags: FlagDTO[];
-    userFlaggedBy: string[];
-    adminFlaggedBy: string[];
-    mentionedUsers: string[];
-}
-interface MessageDTO {
-    id: string;
-    conversationId: string | null;
-    userId: string | null;
-    content: string;
-    fileUrl: string | null;
-    fileName: string | null;
-    createdAt: string;
-    updatedAt: string;
-    likedBy: string[];
-    parentMessageId: string | null;
-    metadata: MessageMetadataDTO | null;
-    replies: MessageDTO[];
-}
-
-declare const FlagSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
-    createdAt: NativeDate;
-    flaggedBy: any;
-    reason: string;
-}, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
-    createdAt: NativeDate;
-    flaggedBy: any;
-    reason: string;
-}>, {}> & mongoose.FlatRecord<{
-    createdAt: NativeDate;
-    flaggedBy: any;
-    reason: string;
-}> & {
-    _id: Types.ObjectId;
-} & {
-    __v: number;
-}>;
-declare const MessageMetadataSchema: mongoose.Schema<MessageMetadata, mongoose.Model<MessageMetadata, any, any, any, mongoose.Document<unknown, any, MessageMetadata, any> & MessageMetadata & {
-    _id: Types.ObjectId;
-} & {
-    __v: number;
-}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, MessageMetadata, mongoose.Document<unknown, {}, mongoose.FlatRecord<MessageMetadata>, {}> & mongoose.FlatRecord<MessageMetadata> & {
-    _id: Types.ObjectId;
-} & {
-    __v: number;
-}>;
-declare const MessageSchema: mongoose.Schema<IMessageDocument, mongoose.Model<IMessageDocument, any, any, any, mongoose.Document<unknown, any, IMessageDocument, any> & IMessageDocument & Required<{
-    _id: unknown;
-}> & {
-    __v: number;
-}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, IMessageDocument, mongoose.Document<unknown, {}, mongoose.FlatRecord<IMessageDocument>, {}> & mongoose.FlatRecord<IMessageDocument> & Required<{
-    _id: unknown;
-}> & {
     __v: number;
 }>;
 
@@ -207,8 +109,8 @@ interface IUser {
 }
 interface IUserDocument extends IUser, Document {
 }
-type MongooseSpecificTypes$2 = keyof Document;
-type CreateUser = Omit<IUserDocument, MongooseSpecificTypes$2>;
+type MongooseSpecificTypes$3 = keyof Document;
+type CreateUser = Omit<IUserDocument, MongooseSpecificTypes$3>;
 interface UserDTO {
     id: string;
     name: string;
@@ -237,6 +139,226 @@ interface PublicUserDTO {
     role: Role;
     metadata: UserMetadata;
 }
+
+declare const REASON_FOR_FLAG: {
+    readonly SPAM: "Spam or Unsolicited";
+    readonly INAPPROPRIATE: "Inappropriate Content";
+    readonly HARASSMENT: "Harassment or Bullying";
+    readonly MISINFORMATION: "Misinformation or False Information";
+    readonly OTHER: "Other";
+};
+type ReasonForFlag = typeof REASON_FOR_FLAG[keyof typeof REASON_FOR_FLAG];
+interface Flag {
+    flaggedBy: Types.ObjectId;
+    type: Role;
+    reason: ReasonForFlag;
+    createdAt: Date;
+}
+interface FlagDTO {
+    id?: string;
+    flaggedBy: string;
+    type: Role;
+    reason: ReasonForFlag;
+    createdAt: string;
+}
+interface Reaction {
+    userId: Types.ObjectId;
+    emoji: string;
+    createdAt: Date;
+}
+interface ReactionDTO {
+    userId: string;
+    emoji: string;
+    createdAt: string;
+}
+interface IMessage {
+    conversationId?: Types.ObjectId;
+    userId: Types.ObjectId;
+    content?: string;
+    fileUrl?: string;
+    fileName?: string;
+    createdAt: Date;
+    updatedAt: Date;
+    likedBy: Types.ObjectId[];
+    parentMessageId?: Types.ObjectId;
+    replies?: IMessageDocument[];
+    metadata: MessageMetadata;
+}
+interface IMessageDocument extends Document, IMessage {
+}
+type MongooseSpecificTypes$2 = keyof Document | '_id';
+type CreateMessage = Omit<IMessageDocument, MongooseSpecificTypes$2 | 'createdAt' | 'updatedAt' | 'replies' | 'metadata'> & {
+    metadata?: Partial<MessageMetadata>;
+};
+type CreateMessageInput = {
+    conversationId: string;
+    userId: string;
+    content?: string;
+    fileUrl?: string;
+    fileName?: string;
+    parentMessageId?: string | null;
+    likedBy?: string[];
+    metadata?: {
+        mentionedUsers?: string[];
+        flags?: Omit<FlagDTO, 'createdAt' | 'id' | 'type'>[];
+    };
+};
+interface MessageMetadata {
+    flags?: Flag[];
+    mentionedUsers?: Types.ObjectId[];
+    reactions?: Reaction[];
+}
+interface MessageMetadataDTO {
+    flags: FlagDTO[];
+    mentionedUsers: string[];
+    reactions: ReactionDTO[];
+}
+interface MessageDTO {
+    id: string;
+    conversationId: string;
+    userId: string;
+    content: string | null;
+    fileUrl: string | null;
+    fileName: string | null;
+    createdAt: string;
+    updatedAt: string;
+    likedBy: string[];
+    parentMessageId: string | null;
+    metadata: MessageMetadataDTO;
+    replies: MessageDTO[];
+}
+
+declare const FlagSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
+    _id: true;
+}, {
+    type: "admin" | "user";
+    createdAt: NativeDate;
+    flaggedBy: any;
+    reason: string;
+}, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
+    type: "admin" | "user";
+    createdAt: NativeDate;
+    flaggedBy: any;
+    reason: string;
+}>, {}> & mongoose.FlatRecord<{
+    type: "admin" | "user";
+    createdAt: NativeDate;
+    flaggedBy: any;
+    reason: string;
+}> & {
+    _id: Types.ObjectId;
+} & {
+    __v: number;
+}>;
+declare const MessageMetadataSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
+    _id: false;
+}, {
+    flags: Types.DocumentArray<{
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }, Types.Subdocument<Types.ObjectId, any, {
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }> & {
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }>;
+    mentionedUsers: any;
+    reactions: Types.DocumentArray<{
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }, Types.Subdocument<Types.ObjectId, any, {
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }> & {
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }>;
+}, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
+    flags: Types.DocumentArray<{
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }, Types.Subdocument<Types.ObjectId, any, {
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }> & {
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }>;
+    mentionedUsers: any;
+    reactions: Types.DocumentArray<{
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }, Types.Subdocument<Types.ObjectId, any, {
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }> & {
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }>;
+}>, {}> & mongoose.FlatRecord<{
+    flags: Types.DocumentArray<{
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }, Types.Subdocument<Types.ObjectId, any, {
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }> & {
+        type: "admin" | "user";
+        createdAt: NativeDate;
+        flaggedBy: any;
+        reason: string;
+    }>;
+    mentionedUsers: any;
+    reactions: Types.DocumentArray<{
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }, Types.Subdocument<Types.ObjectId, any, {
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }> & {
+        createdAt: NativeDate;
+        userId: any;
+        emoji: string;
+    }>;
+}> & {
+    _id: Types.ObjectId;
+} & {
+    __v: number;
+}>;
+declare const MessageSchema: mongoose.Schema<IMessageDocument, mongoose.Model<IMessageDocument, any, any, any, mongoose.Document<unknown, any, IMessageDocument, any> & IMessageDocument & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, IMessageDocument, mongoose.Document<unknown, {}, mongoose.FlatRecord<IMessageDocument>, {}> & mongoose.FlatRecord<IMessageDocument> & Required<{
+    _id: unknown;
+}> & {
+    __v: number;
+}>;
 
 declare const userSchema: mongoose.Schema<IUserDocument, mongoose.Model<IUserDocument, any, any, any, mongoose.Document<unknown, any, IUserDocument, any> & IUserDocument & Required<{
     _id: unknown;
@@ -318,8 +440,8 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: "channel" | "direct";
-    metadata: ConversationMetadata;
     organizationId: any;
+    metadata: ConversationMetadata;
     participants: any[];
     name?: string | null | undefined;
     description?: string | null | undefined;
@@ -329,8 +451,8 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: "channel" | "direct";
-    metadata: ConversationMetadata;
     organizationId: any;
+    metadata: ConversationMetadata;
     participants: any[];
     name?: string | null | undefined;
     description?: string | null | undefined;
@@ -340,8 +462,8 @@ declare const ConversationSchema: mongoose.Schema<any, mongoose.Model<any, any, 
     updatedAt: NativeDate;
 } & {
     type: "channel" | "direct";
-    metadata: ConversationMetadata;
     organizationId: any;
+    metadata: ConversationMetadata;
     participants: any[];
     name?: string | null | undefined;
     description?: string | null | undefined;
@@ -471,7 +593,7 @@ declare const DirectMessageSchema: mongoose.Schema<any, mongoose.Model<any, any,
 }>;
 
 /**
- * Converts a IMessage from the database to a DTO format for the frontend
+ * Converts an IMessage from the database to a DTO format for the frontend
  * @param message of type IMessage
  * @returns MessageDTO type object ready for frontend consumption
  */
@@ -537,4 +659,4 @@ interface FailureResponse {
     error: string;
 }
 
-export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type Flag, type FlagDTO, FlagSchema, GENDER, type Gender, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type Nullable, type OrganizationDTO, type PromptAnswer, type PublicUserDTO, PushTokenModel, REASON_FOR_FLAG, REASON_FOR_LOCK, RELATIONSHIP_STATUS, ROLES, type ReasonForFlag, type ReasonForLock, type RelationshipStatus, type Role, SEXUALITY, type Sexuality, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserMetadata, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, defaultUserMetadata, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };
+export { type ConversationDTO, type ConversationDetailsDTO, type ConversationMetadata, type ConversationMetadataDTO, ConversationMetadataSchema, type CountPerDate, type CreateConversation, type CreateMessage, type CreateMessageInput, type CreateOrganization, type CreateUser, DirectMessageSchema, type FailureResponse, type Flag, type FlagDTO, FlagSchema, GENDER, type Gender, type IConversation, type IConversationDocument, type IMessage, type IMessageDocument, type INotification, type INotificationDocument, type IOrganization, type IOrganizationDocument, type IPushToken, type IPushTokenDocument, type IUser, type IUserDocument, type MessageDTO, MessageHistorySchema, type MessageMetadata, type MessageMetadataDTO, MessageMetadataSchema, type MostActiveConversation, NOTIFICATION_STATUS, NOTIFICATION_TYPE, type NotificationDTO, NotificationModel, type NotificationStatus, type NotificationType, type Nullable, type OrganizationDTO, type PromptAnswer, type PublicUserDTO, PushTokenModel, REASON_FOR_FLAG, REASON_FOR_LOCK, RELATIONSHIP_STATUS, ROLES, type Reaction, type ReactionDTO, type ReasonForFlag, type ReasonForLock, type RelationshipStatus, type Role, SEXUALITY, type Sexuality, type SuccessResponse, TYPE_OF_CHANNEL, type UserAndMessageCount, type UserDTO, type UserMetadata, type UserWithoutSensitiveInfo, ConversationSchema as conversationSchema, conversationTransformToDTO, defaultUserMetadata, MessageSchema as messageSchema, notificationSchema, organizationSchema, pushTokenSchema, transformToMessageDTO, transformToNotificationDTO, transformToOrganizationDTO, userSchema, userTransformToDTO, userTransformToPublicDTO };

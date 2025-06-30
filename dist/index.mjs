@@ -32,25 +32,32 @@ var MessageHistory_default = MessageHistorySchema;
 import mongoose2, { Schema as Schema2 } from "mongoose";
 var FlagSchema = new mongoose2.Schema({
   flaggedBy: { type: mongoose2.Schema.Types.ObjectId, ref: "User", required: true },
+  type: {
+    type: String,
+    enum: ["user", "admin"],
+    required: true
+  },
   reason: { type: String, required: true },
   createdAt: { type: Date, default: Date.now }
-});
+}, { _id: true });
 var MessageMetadataSchema = new Schema2(
   {
-    userFlaggedBy: {
-      type: [Schema2.Types.ObjectId],
-      ref: "User",
+    flags: {
+      type: [FlagSchema],
       default: []
     },
-    adminFlaggedBy: {
-      type: [Schema2.Types.ObjectId],
-      ref: "User",
-      default: []
-    },
-    userFlags: [FlagSchema],
     mentionedUsers: {
       type: [Schema2.Types.ObjectId],
       ref: "User",
+      default: []
+    },
+    reactions: {
+      type: [new Schema2({
+        userId: { type: Schema2.Types.ObjectId, ref: "User", required: true },
+        emoji: { type: String, required: true },
+        // e.g., '👍', '❤️', '😂'
+        createdAt: { type: Date, default: Date.now }
+      }, { _id: false })],
       default: []
     }
   },
@@ -65,7 +72,8 @@ var MessageSchema = new Schema2(
     },
     content: {
       type: String,
-      required: false
+      required: false,
+      default: ""
     },
     fileUrl: {
       type: String,
@@ -89,26 +97,20 @@ var MessageSchema = new Schema2(
       default: null,
       index: true
     },
-    // createdAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
-    // updatedAt: {
-    //   type: Date,
-    //   default: Date.now,
-    // },
     likedBy: {
       type: [Schema2.Types.ObjectId],
       ref: "User",
       default: []
     },
+    // Use the redesigned metadata schema
     metadata: {
       type: MessageMetadataSchema,
-      default: () => ({ userFlaggedBy: [], adminFlaggedBy: [] })
+      default: () => ({ flags: [], mentionedUsers: [], reactions: [] })
+      // Ensure default initializes new fields
     }
   },
   { timestamps: true }
-  //auto handle timestamps
+  // Mongoose handles createdAt and updatedAt automatically
 );
 MessageSchema.pre("validate", function(next) {
   if (!this.conversationId) {
@@ -124,7 +126,7 @@ MessageSchema.virtual("replies", {
 });
 MessageSchema.index({ content: "text" });
 MessageSchema.pre(/^find/, function(next) {
-  this.populate("replies");
+  this.populate("replies").populate("metadata.mentionedUsers").populate("metadata.flags.flaggedBy").populate("metadata.reactions.userId");
   next();
 });
 var Message_default = MessageSchema;
@@ -485,37 +487,61 @@ var DirectMessage_default = DirectMessageSchema;
 function mapObjectIdsToStrings(ids) {
   return Array.isArray(ids) ? ids.map((id) => id.toString()) : [];
 }
+function transformToFlagDTO(flag) {
+  return {
+    flaggedBy: flag.flaggedBy ? flag.flaggedBy.toString() : "",
+    // Assuming 'flaggedBy' is populated to a user object or is ObjectId
+    type: flag.type,
+    reason: flag.reason,
+    createdAt: flag.createdAt.toISOString()
+  };
+}
+function transformToReactionDTO(reaction) {
+  return {
+    userId: reaction.userId ? reaction.userId.toString() : "",
+    // Assuming 'userId' is populated to a user object or is ObjectId
+    emoji: reaction.emoji,
+    createdAt: reaction.createdAt.toISOString()
+  };
+}
 var transformToMessageDTO = (message) => {
+  if (!message) {
+    return null;
+  }
   let flattened_replies = [];
   if (message.replies && Array.isArray(message.replies)) {
     flattened_replies = message.replies.map((reply) => transformToMessageDTO(reply));
   }
+  const metadataDTO = {
+    flags: message.metadata?.flags?.map(transformToFlagDTO) || [],
+    // Map each flag using the new helper
+    mentionedUsers: mapObjectIdsToStrings(message.metadata?.mentionedUsers),
+    // Use the existing helper
+    reactions: message.metadata?.reactions?.map(transformToReactionDTO) || []
+    // Map each reaction using the new helper
+  };
   let flattened_msg = {
-    id: message._id._id.toString(),
-    metadata: message?.metadata ? {
-      userFlaggedBy: mapObjectIdsToStrings(message.metadata.userFlaggedBy),
-      adminFlaggedBy: mapObjectIdsToStrings(
-        message.metadata.adminFlaggedBy
-      ),
-      userFlags: message.metadata.userFlags ? message.metadata.userFlags.map((flag) => ({
-        flaggedBy: flag.flaggedBy.toString(),
-        reason: flag.reason,
-        createdAt: flag.createdAt.toISOString()
-      })) : [],
-      mentionedUsers: mapObjectIdsToStrings(
-        message.metadata.mentionedUsers
-      )
-    } : null,
-    // Use metadataDTO eventually
-    conversationId: message.conversationId ? message.conversationId.toString() : null,
-    userId: message.userId ? message.userId.toString() : null,
+    id: message.id.toString(),
+    // _id is directly available on the document, no need for (_id as Types.ObjectId)._id
+    metadata: metadataDTO,
+    // Assign the transformed metadataDTO
+    conversationId: message.conversationId ? message.conversationId.toString() : "",
+    // Ensure string, not null if DTO expects string
+    userId: message.userId ? message.userId.toString() : "",
+    // Ensure string, not null if DTO expects string
     content: message.content || "",
-    fileUrl: message.fileUrl ? message.fileUrl.toString() : null,
-    fileName: message.fileName ? message.fileName.toString() : null,
+    // Ensure string
+    fileUrl: message.fileUrl || "",
+    // Ensure string, not null, default to empty string
+    fileName: message.fileName || "",
+    // Ensure string, not null, default to empty string
     parentMessageId: message.parentMessageId ? message.parentMessageId.toString() : null,
+    // Allow null if parentMessageId can be optional
     createdAt: message.createdAt.toISOString(),
-    updatedAt: message.updatedAt.toISOString(),
-    likedBy: message.likedBy ? message.likedBy.map((id) => id.toString()) : [],
+    updatedAt: message.updatedAt ? message.updatedAt.toISOString() : message.createdAt.toISOString(),
+    // Ensure updatedAt handles cases where it might not exist (e.g., new document before save)
+    likedBy: mapObjectIdsToStrings(message.likedBy),
+    // Use helper for likedBy
     replies: flattened_replies
   };
   return flattened_msg;
